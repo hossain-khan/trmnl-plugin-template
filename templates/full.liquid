@@ -30,28 +30,40 @@
         {% comment %} 
           Example: Display your primary data here
           Replace with actual data from your data source
+          
+          Tip: Use data-value-fit for long headlines that need to scale
+          Tip: Use value--tnums for precise numeric alignment
         {% endcomment %}
-        <div class="value value--large md:value--xxlarge lg:value--xxxlarge">
+        <div class="value value--large md:value--xxlarge lg:value--xxxlarge" data-value-fit="true" data-value-fit-max-height="220">
           42
         </div>
         <div class="title title--small md:title--medium lg:title--large">
           Example Value
         </div>
-        <div class="description md:label">
-          This is a template example
+        <div class="description md:label" data-clamp="2">
+          This is a template example with better best practices
         </div>
       </div>
     </div>
 
-    {% comment %} Optional secondary content area {% endcomment %}
-    <div class="flex flex--row gap--medium md:gap--large">
-      <div class="flex flex--col flex--center-x" style="flex: 1;">
-        <div class="value value--medium md:value--large">📊</div>
-        <div class="label">Stat 1</div>
+    {% comment %} Visual separator using modern divider component {% endcomment %}
+    <div class="divider"></div>
+
+    {% comment %} Optional secondary content area with improved styling {% endcomment %}
+    <div class="grid grid--cols-2 gap--medium md:gap--large">
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content text--center">
+          <div class="value value--medium md:value--large">📊</div>
+          <div class="label">Stat 1</div>
+        </div>
       </div>
-      <div class="flex flex--col flex--center-x" style="flex: 1;">
-        <div class="value value--medium md:value--large">📈</div>
-        <div class="label">Stat 2</div>
+      <div class="item">
+        <div class="meta"></div>
+        <div class="content text--center">
+          <div class="value value--medium md:value--large">📈</div>
+          <div class="label">Stat 2</div>
+        </div>
       </div>
     </div>
   </div>

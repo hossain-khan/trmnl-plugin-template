@@ -46,15 +46,15 @@
   ============================================================================
   DATA DISPLAY COMPONENT
   ============================================================================
-  Displays a value with optional label
-  Parameters: value (required), label (optional), size (small, medium, large)
+  Displays a value with optional label, supports tabular numbers
+  Parameters: value (required), label (optional), size (small, medium, large), use_tnums (true/false)
 {% endcomment %}
 {% template data_display %}
 <div class="flex flex--col gap--xsmall">
   {% if label %}
   <span class="label">{{ label }}</span>
   {% endif %}
-  <span class="value {% if size == 'small' %}value--small{% elsif size == 'large' %}value--large lg:value--xlarge{% else %}value--medium md:value--large{% endif %}">
+  <span class="value {% if size == 'small' %}value--small{% elsif size == 'large' %}value--large lg:value--xlarge{% else %}value--medium md:value--large{% endif %} {% if use_tnums %}value--tnums{% endif %}">
     {{ value }}
   </span>
 </div>
@@ -116,6 +116,58 @@
   {% if instance %}
   <span class="instance">{{ instance }}</span>
   {% endif %}
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  RICH TEXT COMPONENT EXAMPLE
+  ============================================================================
+  Complex formatted content with alignment and size control
+  Parameters: alignment (left, center, right), size (small, default, large)
+{% endcomment %}
+{% template rich_text_example %}
+<div class="richtext richtext--{{ alignment | default: 'center' }} gap--large">
+  <div class="content content--{{ alignment | default: 'center' }} {% if size == 'small' %}content--small{% elsif size == 'large' %}content--large{% endif %} gap text--{{ alignment | default: 'center' }}">
+    <p>This is rich text content with multiple paragraphs.</p>
+    <p>Perfect for detailed information and explanations.</p>
+  </div>
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  GRID ITEM COMPONENT
+  ============================================================================
+  Reusable grid item with metadata and content
+  Parameters: value (required), label (required), meta (optional)
+{% endcomment %}
+{% template grid_item %}
+<div class="item">
+  {% if meta %}<div class="meta">{{ meta }}</div>{% endif %}
+  <div class="content">
+    <span class="value value--large value--tnums">{{ value }}</span>
+    <span class="label">{{ label }}</span>
+  </div>
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  PROGRESS BAR COMPONENT
+  ============================================================================
+  Visual progress indicator with percentage
+  Parameters: percentage (required), label (optional), size (small, default, large)
+{% endcomment %}
+{% template progress_bar %}
+<div class="progress-bar {% if size == 'small' %}progress-bar--small{% elsif size == 'large' %}progress-bar--large{% endif %}">
+  <div class="content">
+    {% if label %}<span class="label">{{ label }}</span>{% endif %}
+    <span class="value value--xxsmall">{{ percentage }}%</span>
+  </div>
+  <div class="track">
+    <div class="fill" style="width: {{ percentage }}%"></div>
+  </div>
 </div>
 {% endtemplate %}
 
