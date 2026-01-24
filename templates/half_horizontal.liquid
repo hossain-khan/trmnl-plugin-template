@@ -34,7 +34,7 @@
     {% comment %} Main content area - left side on landscape {% endcomment %}
     <div class="flex flex--center-x flex--center-y" style="flex: 1;">
       <div class="text--center">
-        <div class="value value--medium md:value--large lg:value--xlarge">
+        <div class="value value--medium md:value--large lg:value--xlarge value--tnums" data-value-fit="true" data-value-fit-max-height="180">
           42
         </div>
         <div class="title title--small md:title--medium">
@@ -43,19 +43,33 @@
       </div>
     </div>
 
+    {% comment %} Visual separator for landscape view {% endcomment %}
+    <div class="hidden portrait:hidden md:block">
+      <div class="divider portrait:hidden"></div>
+    </div>
+
     {% comment %} Secondary content area - right side on landscape {% endcomment %}
-    <div class="flex flex--col gap--xsmall portrait:gap--small" style="max-width: 200px; portrait:max-width: 100%;">
-      <div class="text--center">
-        <div class="label">Detail 1</div>
-        <div class="value value--small md:value--medium">100</div>
+    <div class="grid grid--cols-1 gap--xsmall portrait:gap--small portrait:grid--cols-3" style="max-width: 200px; portrait:max-width: 100%;">
+      <div class="item text--center">
+        <div class="meta"></div>
+        <div class="content">
+          <div class="label label--small">Detail 1</div>
+          <div class="value value--small md:value--medium value--tnums">100</div>
+        </div>
       </div>
-      <div class="text--center">
-        <div class="label">Detail 2</div>
-        <div class="value value--small md:value--medium">50</div>
+      <div class="item text--center">
+        <div class="meta"></div>
+        <div class="content">
+          <div class="label label--small">Detail 2</div>
+          <div class="value value--small md:value--medium value--tnums">50</div>
+        </div>
       </div>
-      <div class="text--center">
-        <div class="label">Detail 3</div>
-        <div class="value value--small md:value--medium">75</div>
+      <div class="item text--center">
+        <div class="meta"></div>
+        <div class="content">
+          <div class="label label--small">Detail 3</div>
+          <div class="value value--small md:value--medium value--tnums">75</div>
+        </div>
       </div>
     </div>
   </div>

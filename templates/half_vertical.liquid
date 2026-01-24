@@ -25,27 +25,47 @@
   
   <div class="flex flex--col gap--small h--full">
     
-    {% comment %} Primary content area - fills available space {% endcomment %}
+    {% comment %}
+      Primary content area - fills available space
+      Uses richtext pattern for complex, formatted content
+      See Advanced Layout Patterns section in copilot-instructions
+    {% endcomment %}
     <div class="flex flex--center-x flex--center-y" style="flex: 1;">
-      <div class="text--center">
-        <div class="value value--medium md:value--large lg:value--xlarge">
-          42
-        </div>
-        <div class="title title--small md:title--medium">
-          Primary Data
+      <div class="richtext richtext--center gap--small">
+        <div class="content content--center gap--xsmall text--center">
+          <div class="value value--xxlarge md:value--xxxlarge" data-clamp="1">
+            📊
+          </div>
+          <div class="title title--medium md:title--large">
+            Current Status
+          </div>
+          <div class="description md:title md:title--small" data-clamp="2">
+            {{ status_description | default: "Everything is configured correctly" }}
+          </div>
         </div>
       </div>
     </div>
 
-    {% comment %} Secondary content area - at bottom {% endcomment %}
-    <div class="flex flex--row gap--medium md:gap--large">
-      <div class="flex flex--col flex--center-x text--center" style="flex: 1;">
-        <div class="label label--small">Info 1</div>
-        <div class="value value--small md:value--medium">Value</div>
+    {% comment %} Modern divider separating top and bottom content {% endcomment %}
+    <div class="divider"></div>
+
+    {% comment %}
+      Secondary content area - at bottom
+      Grid layout provides better metric alignment
+      Uses value--tnums for tabular number display
+    {% endcomment %}
+    <div class="grid grid--cols-3 gap--xsmall text--center">
+      <div>
+        <div class="label label--small">Last</div>
+        <div class="value value--xsmall value--tnums">{{ last_value | default: "—" }}</div>
       </div>
-      <div class="flex flex--col flex--center-x text--center" style="flex: 1;">
-        <div class="label label--small">Info 2</div>
-        <div class="value value--small md:value--medium">Value</div>
+      <div>
+        <div class="label label--small">Average</div>
+        <div class="value value--xsmall value--tnums">{{ average_value | default: "—" }}</div>
+      </div>
+      <div>
+        <div class="label label--small">Best</div>
+        <div class="value value--xsmall value--tnums">{{ best_value | default: "—" }}</div>
       </div>
     </div>
   </div>

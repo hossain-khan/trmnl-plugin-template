@@ -27,14 +27,22 @@
   
   {% comment %} 
     Everything centered and minimal
-    Use flex: 1 to fill available space
+    Uses inline-flex for mixed content display
+    See Advanced Layout Patterns section for device-specific optimization
   {% endcomment %}
-  <div class="flex flex--col flex--center-x flex--center-y h--full" style="gap: 4px;">
-    <div class="value value--medium md:value--large">
-      42
+  <div class="flex flex--col flex--center-x flex--center-y h--full gap--xsmall">
+    
+    {% comment %} 
+      Primary value with tabular numbers for alignment
+      data-value-fit auto-scales headline to fit available space
+    {% endcomment %}
+    <div class="value value--large md:value--xlarge value--tnums" data-value-fit="true" data-value-fit-max-height="140">
+      {{ primary_value | default: "42" }}
     </div>
-    <div class="title title--small">
-      Quick Stats
+    
+    {% comment %} Compact title - uses data-clamp for safety {% endcomment %}
+    <div class="title title--small md:title--medium text--center" data-clamp="1">
+      {{ metric_name | default: "Quick Stats" }}
     </div>
   </div>
 
