@@ -87,6 +87,14 @@ your-plugin-name/
   - Tight padding (`p--1`)
   - Every pixel counts
 
+### Layout Previews
+
+| Full Layout | Half Horizontal |
+|---|---|
+| ![Full Layout Preview](assets/demo/preview-full.png) | ![Half Horizontal Preview](assets/demo/preview-half-horizontal.png) |
+| **Half Vertical** | **Quadrant** |
+| ![Half Vertical Preview](assets/demo/preview-half-vertical.png) | ![Quadrant Preview](assets/demo/preview-quadrant.png) |
+
 ## ⚙️ Configuration Files
 
 ### `settings.yml`
