@@ -1,0 +1,10 @@
+{
+  "has_data": true,
+  "title": "Example Plugin",
+  "value": 42,
+  "status": "success",
+  "metadata": "Last updated: 2 minutes ago",
+  "detail_1": "100",
+  "detail_2": "50",
+  "detail_3": "75"
+}

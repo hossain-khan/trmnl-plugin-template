@@ -1,0 +1,130 @@
+{% comment %}
+  ============================================================================
+  SHARED.LIQUID - Reusable Components and Assets
+  ============================================================================
+  This file contains:
+  - Reusable template components
+  - Base64-encoded icons and assets
+  - Common variables and logic
+  - Utility templates
+
+  Usage: {% render "shared", template_name: "component_name", param: value %}
+  ============================================================================
+{% endcomment %}
+
+{% comment %}
+  ============================================================================
+  ERROR STATE COMPONENT
+  ============================================================================
+  Displays helpful error message when plugin is unconfigured
+  Parameters: size (full, half, quadrant)
+{% endcomment %}
+{% template error_state %}
+{% if size == 'full' %}
+<div class="flex flex--col flex--center-x flex--center-y gap--medium h--full">
+  <div class="value value--xlarge md:value--xxlarge lg:value--xxxlarge text--center">⚙️</div>
+  <div class="title title--medium md:title--large text--center">Configuration Required</div>
+  <div class="description md:title md:title--small text--center">
+    This plugin needs to be configured. Check your settings and try again.
+  </div>
+</div>
+{% elsif size == 'half' %}
+<div class="flex flex--col flex--center-x flex--center-y gap--small h--full">
+  <div class="value value--large md:value--xlarge">⚙️</div>
+  <div class="title title--small md:title--medium text--center">Config Required</div>
+  <div class="description text--center">Check your settings</div>
+</div>
+{% elsif size == 'quadrant' %}
+<div class="flex flex--col flex--center-x flex--center-y gap--xsmall h--full">
+  <div class="value value--medium">⚙️</div>
+  <div class="description text--center">Configure</div>
+</div>
+{% endif %}
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  DATA DISPLAY COMPONENT
+  ============================================================================
+  Displays a value with optional label
+  Parameters: value (required), label (optional), size (small, medium, large)
+{% endcomment %}
+{% template data_display %}
+<div class="flex flex--col gap--xsmall">
+  {% if label %}
+  <span class="label">{{ label }}</span>
+  {% endif %}
+  <span class="value {% if size == 'small' %}value--small{% elsif size == 'large' %}value--large lg:value--xlarge{% else %}value--medium md:value--large{% endif %}">
+    {{ value }}
+  </span>
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  METRIC CARD COMPONENT
+  ============================================================================
+  Displays a metric in a card-like layout
+  Parameters: number (required), label (required), unit (optional)
+{% endcomment %}
+{% template metric_card %}
+<div class="flex flex--col gap--xsmall flex--center-x text--center">
+  <span class="value value--large md:value--xlarge lg:value--xxlarge">
+    {{ number }}
+    {% if unit %}<span class="label">{{ unit }}</span>{% endif %}
+  </span>
+  <span class="label">{{ label }}</span>
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  STATUS BADGE COMPONENT
+  ============================================================================
+  Displays a status badge with icon
+  Parameters: status (required), message (required)
+{% endcomment %}
+{% template status_badge %}
+<div class="flex flex--row flex--center-y gap--small p--1 rounded bg--gray-50">
+  {% case status %}
+  {% when 'success' %}
+  <span class="value value--small">✓</span>
+  {% when 'warning' %}
+  <span class="value value--small">⚠️</span>
+  {% when 'error' %}
+  <span class="value value--small">✕</span>
+  {% when 'info' %}
+  <span class="value value--small">ℹ️</span>
+  {% endcase %}
+  <span class="description">{{ message }}</span>
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  TITLE BAR TEMPLATE
+  ============================================================================
+  Standard title bar used in layouts
+  Parameters: title (required), icon (optional), instance (optional)
+{% endcomment %}
+{% template title_bar %}
+<div class="title_bar">
+  {% if icon %}
+  <img src="{{ icon }}" class="icon h--6" alt="{{ title }}">
+  {% endif %}
+  <span class="title md:title--large">{{ title }}</span>
+  {% if instance %}
+  <span class="instance">{{ instance }}</span>
+  {% endif %}
+</div>
+{% endtemplate %}
+
+{% comment %}
+  ============================================================================
+  PLACEHOLDER CONTENT
+  ============================================================================
+  Use these for testing and demo purposes
+{% endcomment %}
+
+{% comment %} Placeholder icon (1x1 transparent PNG) {% endcomment %}
+{% assign placeholder_icon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" %}

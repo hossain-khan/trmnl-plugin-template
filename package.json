@@ -1,0 +1,37 @@
+{
+  "name": "trmnl-plugin-template",
+  "version": "1.0.0",
+  "description": "A production-ready template for creating TRMNL plugins",
+  "keywords": [
+    "trmnl",
+    "plugin",
+    "e-ink",
+    "template",
+    "liquid"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/your-plugin-name.git"
+  },
+  "homepage": "https://github.com/your-username/your-plugin-name",
+  "bugs": {
+    "url": "https://github.com/your-username/your-plugin-name/issues"
+  },
+  "scripts": {
+    "validate": "echo 'No build step required for plugin templates'"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "files": [
+    "templates/",
+    "assets/",
+    "settings.yml",
+    "custom-fields.yml",
+    "README.md",
+    "LICENSE"
+  ]
+}

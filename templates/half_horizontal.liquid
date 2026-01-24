@@ -1,0 +1,75 @@
+{% comment %}
+  ============================================================================
+  HALF_HORIZONTAL.LIQUID - Half-size Horizontal Layout Template
+  ============================================================================
+  Use this template for side-by-side content on half-width displays.
+  
+  Best For:
+  - Two-column layouts (data + details)
+  - Comparative displays
+  - Side-by-side information
+  
+  Device Sizes: Works across all devices (sm, md, lg)
+  Padding: p--2 (standard)
+  Responsive: Switches to vertical (flex--col) in portrait mode
+  
+  Structure:
+  - Two flex columns with gap
+  - Portrait fallback to column layout
+  - Compact spacing for limited width
+  ============================================================================
+{% endcomment %}
+
+<div class="layout">
+  {% comment %} Check if data is available {% endcomment %}
+  {% if has_data %}
+  
+  {% comment %} 
+    Row layout on landscape, column on portrait
+    Left side: main content (flex: 1)
+    Right side: details (fixed or constrained width)
+  {% endcomment %}
+  <div class="flex flex--row gap--medium portrait:flex--col flex--center-y h--full">
+    
+    {% comment %} Main content area - left side on landscape {% endcomment %}
+    <div class="flex flex--center-x flex--center-y" style="flex: 1;">
+      <div class="text--center">
+        <div class="value value--medium md:value--large lg:value--xlarge">
+          42
+        </div>
+        <div class="title title--small md:title--medium">
+          Main Value
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Secondary content area - right side on landscape {% endcomment %}
+    <div class="flex flex--col gap--xsmall portrait:gap--small" style="max-width: 200px; portrait:max-width: 100%;">
+      <div class="text--center">
+        <div class="label">Detail 1</div>
+        <div class="value value--small md:value--medium">100</div>
+      </div>
+      <div class="text--center">
+        <div class="label">Detail 2</div>
+        <div class="value value--small md:value--medium">50</div>
+      </div>
+      <div class="text--center">
+        <div class="label">Detail 3</div>
+        <div class="value value--small md:value--medium">75</div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  
+  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
+  {% render "shared", template_name: "error_state", size: "half" %}
+  
+  {% endif %}
+</div>
+
+{% comment %} Title bar at bottom {% endcomment %}
+<div class="title_bar">
+  <span class="title md:title--medium">Example Plugin</span>
+  <span class="instance">Half Horizontal</span>
+</div>

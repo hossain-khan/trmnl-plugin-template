@@ -1,0 +1,71 @@
+{% comment %}
+  ============================================================================
+  FULL.LIQUID - Full-screen Layout Template
+  ============================================================================
+  Use this template for displaying content across the entire TRMNL screen.
+  
+  Best For:
+  - Detailed information displays
+  - Main data presentation
+  - Full-screen widgets
+  
+  Device Sizes: Works across all devices (sm, md, lg)
+  Padding: p--2 (standard)
+  
+  Structure:
+  - Main content area with flex: 1 for vertical centering
+  - Title bar at bottom for branding
+  - Error state fallback for unconfigured plugins
+  ============================================================================
+{% endcomment %}
+
+<div class="layout">
+  {% comment %} Check if data is available {% endcomment %}
+  {% if has_data %}
+  
+  <div class="flex flex--col gap--medium h--full">
+    {% comment %} Main content area - centered vertically {% endcomment %}
+    <div class="flex flex--center-x flex--center-y" style="flex: 1;">
+      <div class="text--center">
+        {% comment %} 
+          Example: Display your primary data here
+          Replace with actual data from your data source
+        {% endcomment %}
+        <div class="value value--large md:value--xxlarge lg:value--xxxlarge">
+          42
+        </div>
+        <div class="title title--small md:title--medium lg:title--large">
+          Example Value
+        </div>
+        <div class="description md:label">
+          This is a template example
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Optional secondary content area {% endcomment %}
+    <div class="flex flex--row gap--medium md:gap--large">
+      <div class="flex flex--col flex--center-x" style="flex: 1;">
+        <div class="value value--medium md:value--large">📊</div>
+        <div class="label">Stat 1</div>
+      </div>
+      <div class="flex flex--col flex--center-x" style="flex: 1;">
+        <div class="value value--medium md:value--large">📈</div>
+        <div class="label">Stat 2</div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  
+  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
+  {% render "shared", template_name: "error_state", size: "full" %}
+  
+  {% endif %}
+</div>
+
+{% comment %} Title bar at bottom {% endcomment %}
+<div class="title_bar">
+  <span class="title md:title--large">Example Plugin</span>
+  <span class="instance">Full Layout</span>
+</div>

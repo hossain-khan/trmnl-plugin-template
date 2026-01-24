@@ -1,0 +1,110 @@
+# Custom Form Fields Configuration
+# 
+# This file defines the user-facing form fields that appear in the TRMNL
+# plugin configuration interface. Users enter values here which become
+# available in your templates via:
+#   {{ trmnl.plugin_settings.custom_fields_values.field_name }}
+
+# Field Types:
+# - text: Single line text input
+# - long_text: Multi-line text area
+# - select: Dropdown with predefined options
+# - checkbox: Boolean toggle
+# - number: Numeric input
+# - url: URL input with validation
+# - email: Email input with validation
+
+# Example text field
+- key: "api_key"
+  type: "text"
+  label: "API Key"
+  placeholder: "Enter your API key"
+  required: true
+  description: "Required for authenticating with the data service"
+
+# Example select field
+- key: "data_source"
+  type: "select"
+  label: "Data Source"
+  required: true
+  options:
+    - label: "Source A"
+      value: "source_a"
+    - label: "Source B"
+      value: "source_b"
+    - label: "Source C"
+      value: "source_c"
+  description: "Select which data source to display"
+
+# Example URL field
+- key: "webhook_url"
+  type: "url"
+  label: "Webhook URL"
+  placeholder: "https://example.com/webhook"
+  required: false
+  description: "Optional: Receive updates via webhook (if using webhook strategy)"
+
+# Example checkbox field
+- key: "show_details"
+  type: "checkbox"
+  label: "Show Additional Details"
+  required: false
+  description: "Display extra information in the layout"
+
+# Example number field
+- key: "refresh_interval"
+  type: "number"
+  label: "Refresh Interval (minutes)"
+  placeholder: "15"
+  required: false
+  description: "How often to refresh data (1-1440)"
+
+# Example custom title
+- key: "custom_title"
+  type: "text"
+  label: "Custom Plugin Title"
+  placeholder: "Enter a custom title (optional)"
+  required: false
+  description: "Leave blank to use plugin's default title"
+
+# Developer Notes:
+#
+# 1. ACCESSING FIELD VALUES IN TEMPLATES
+#    {{ trmnl.plugin_settings.custom_fields_values.api_key }}
+#    {{ trmnl.plugin_settings.custom_fields_values.data_source }}
+#    {{ trmnl.plugin_settings.custom_fields_values.show_details }}
+#
+# 2. CONDITIONAL DISPLAY
+#    {% if trmnl.plugin_settings.custom_fields_values.show_details == "true" %}
+#      <!-- Show detailed content -->
+#    {% endif %}
+#
+# 3. FIELD REQUIREMENTS
+#    - required: true = User must fill in this field
+#    - required: false = Optional field
+#    - All required fields must be set before plugin activates
+#
+# 4. FIELD ORDERING
+#    - Fields appear in the order defined in this file
+#    - Group related fields together
+#    - Put most important fields first
+#
+# 5. VALIDATION
+#    - type: url = Validates URL format
+#    - type: email = Validates email format
+#    - type: number = Only numeric input allowed
+#    - Custom validation in your backend if needed
+#
+# 6. SECURITY
+#    - Never log or expose API keys/secrets
+#    - Treat credentials as sensitive
+#    - Use HTTPS for webhook URLs
+#    - Consider using environment variables for secrets
+#
+# 7. CONDITIONAL VISIBILITY (Advanced)
+#    Some TRMNL versions support conditional field visibility.
+#    If supported, you can add "visible_if" to show/hide fields:
+#    - visible_if:
+#        field: "data_source"
+#        value: "source_a"
+#      (Shows this field only when data_source == "source_a")

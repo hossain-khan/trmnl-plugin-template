@@ -1,0 +1,74 @@
+# Plugin Configuration
+# 
+# This file configures how your TRMNL plugin behaves:
+# - How data is fetched (polling_url, webhook, static)
+# - How often the display refreshes (refresh_frequency)
+# - Which layouts are available
+# - Plugin metadata
+
+# Strategy: How to fetch data
+# Options: "polling" (TRMNL fetches), "webhook" (you push), "static" (hardcoded)
+strategy: "polling"
+
+# Polling URL: Endpoint TRMNL calls to fetch data (required for polling strategy)
+# TRMNL will make GET requests at refresh_frequency intervals
+# Response should be JSON with your template variables
+polling_url: "https://your-api.example.com/plugin/data"
+
+# Refresh Frequency: How often to fetch data (in minutes)
+# Range: 1-1440 minutes (1 minute to 24 hours)
+# Lower = more frequent updates, higher = less battery drain
+refresh_frequency: 15
+
+# Available Layouts: Which template layouts this plugin supports
+# All plugins should provide at least the 'full' layout
+# Optional layouts: half_horizontal, half_vertical, quadrant
+layouts:
+  - full
+  - half_horizontal
+  - half_vertical
+  - quadrant
+
+# Plugin Metadata
+name: "Example Plugin"
+description: "A template plugin for TRMNL devices"
+author: "Your Name"
+version: "1.0.0"
+
+# Tap Action: URL to open when user taps plugin (optional)
+# Leave empty or remove if not needed
+tap_action_url: ""
+
+# Developer Notes:
+# 
+# 1. POLLING STRATEGY (used in this template)
+#    - TRMNL sends GET requests to polling_url at refresh_frequency intervals
+#    - Your backend should return JSON with template variables
+#    - Example response:
+#    {
+#      "title": "Current Value",
+#      "value": 42,
+#      "has_data": true,
+#      "status": "success"
+#    }
+#
+# 2. WEBHOOK STRATEGY
+#    - You push data to TRMNL when it changes
+#    - Lower latency, more immediate updates
+#    - Requires authentication setup in TRMNL dashboard
+#
+# 3. REFRESH FREQUENCY
+#    - 1-5 minutes: Very responsive, higher battery usage
+#    - 5-30 minutes: Balanced, good for most use cases
+#    - 30+ minutes: Low battery impact, delayed updates
+#
+# 4. LAYOUT SELECTION
+#    - full: Entire screen (default)
+#    - half_horizontal: Side-by-side layout
+#    - half_vertical: Stacked layout
+#    - quadrant: Compact corner display
+#
+# 5. ERROR HANDLING
+#    - Always include error states in your templates
+#    - Check for missing/invalid data with {% if has_data %}
+#    - Provide fallback content

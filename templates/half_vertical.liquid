@@ -1,0 +1,65 @@
+{% comment %}
+  ============================================================================
+  HALF_VERTICAL.LIQUID - Half-size Vertical Layout Template
+  ============================================================================
+  Use this template for top-bottom stacked content on half-height displays.
+  
+  Best For:
+  - Stacked layouts (primary + secondary content)
+  - Top/bottom split displays
+  - Compact vertical layouts
+  
+  Device Sizes: Works across all devices (sm, md, lg)
+  Padding: p--2 (standard)
+  
+  Structure:
+  - Primary content fills available space (flex: 1)
+  - Secondary content at bottom
+  - Minimal gap to maximize space
+  ============================================================================
+{% endcomment %}
+
+<div class="layout">
+  {% comment %} Check if data is available {% endcomment %}
+  {% if has_data %}
+  
+  <div class="flex flex--col gap--small h--full">
+    
+    {% comment %} Primary content area - fills available space {% endcomment %}
+    <div class="flex flex--center-x flex--center-y" style="flex: 1;">
+      <div class="text--center">
+        <div class="value value--medium md:value--large lg:value--xlarge">
+          42
+        </div>
+        <div class="title title--small md:title--medium">
+          Primary Data
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Secondary content area - at bottom {% endcomment %}
+    <div class="flex flex--row gap--medium md:gap--large">
+      <div class="flex flex--col flex--center-x text--center" style="flex: 1;">
+        <div class="label label--small">Info 1</div>
+        <div class="value value--small md:value--medium">Value</div>
+      </div>
+      <div class="flex flex--col flex--center-x text--center" style="flex: 1;">
+        <div class="label label--small">Info 2</div>
+        <div class="value value--small md:value--medium">Value</div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  
+  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
+  {% render "shared", template_name: "error_state", size: "half" %}
+  
+  {% endif %}
+</div>
+
+{% comment %} Title bar at bottom {% endcomment %}
+<div class="title_bar">
+  <span class="title md:title--medium">Example Plugin</span>
+  <span class="instance">Half Vertical</span>
+</div>

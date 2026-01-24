@@ -1,0 +1,52 @@
+{% comment %}
+  ============================================================================
+  QUADRANT.LIQUID - Quarter-size Layout Template
+  ============================================================================
+  Use this template for minimal, compact displays on quarter-size screens.
+  
+  Best For:
+  - Simple, single-value displays
+  - Compact widgets in dashboard
+  - Minimal information cards
+  - Icon + label combinations
+  
+  Device Sizes: Works across all devices (sm, md, lg)
+  Padding: p--1 (minimal - every pixel counts!)
+  Responsive: Simplifies further for very small screens
+  
+  Structure:
+  - Single centered content
+  - Minimal title bar
+  - Absolute space efficiency
+  ============================================================================
+{% endcomment %}
+
+<div class="layout">
+  {% comment %} Check if data is available {% endcomment %}
+  {% if has_data %}
+  
+  {% comment %} 
+    Everything centered and minimal
+    Use flex: 1 to fill available space
+  {% endcomment %}
+  <div class="flex flex--col flex--center-x flex--center-y h--full" style="gap: 4px;">
+    <div class="value value--medium md:value--large">
+      42
+    </div>
+    <div class="title title--small">
+      Quick Stats
+    </div>
+  </div>
+
+  {% else %}
+  
+  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
+  {% render "shared", template_name: "error_state", size: "quadrant" %}
+  
+  {% endif %}
+</div>
+
+{% comment %} Minimal title bar for quadrant {% endcomment %}
+<div class="title_bar">
+  <span class="title title--small">Plugin</span>
+</div>
