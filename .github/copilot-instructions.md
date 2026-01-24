@@ -157,10 +157,20 @@ Pattern: `size:orientation:bit-depth:utility`
 
 #### Layout
 
-- **Flexbox**: `flex flex--row`, `flex--col`, `flex--center-y`, `flex--center-x`, `flex--between`, `gap--xsmall`, `gap--small`, `gap--medium`, `gap--large`
-- **Grid**: `grid grid--cols-2`, `grid--cols-3`, `gap--xsmall`
-- **Sizing**: `w--40`, `w--52`, `min-w--40`, `h--36`, `h--full`
-- **Spacing**: `p--1`, `p--2`, `mb--xsmall`, `mb--small`, `my--24`
+- **Flexbox**: `flex flex--row`, `flex--col`, `flex--center-y`, `flex--center-x`, `flex--between`, `inline-flex`, `self--start`, `self--center`, `self--end`, `self--stretch`
+  - Gap utilities: `gap--xsmall`, `gap--small`, `gap--medium`, `gap--large`, `gap--xlarge`
+  - `self--*` controls individual flex item cross-axis alignment
+  
+- **Grid**: `grid grid--cols-1`, `grid--cols-2`, `grid--cols-3`, `grid--cols-4`
+  - Row/column positioning: `row--start`, `row--center`, `row--end`, `col--start`, `col--center`, `col--end`
+  - Column spanning: `col--span-1`, `col--span-2`, etc.
+  - Gap utilities: `gap--xsmall`, `gap--small`, `gap--medium`, `gap--large`
+  
+- **Sizing**: `w--auto`, `w--full`, `w--8` through `w--96`, `w--min-72`, `w--max-32`
+  - Heights: `h--auto`, `h--full`, `h--5` through `h--96`, `h--min-12`, `h--max-8`
+  - Dynamic widths: `w--[240px]` for custom pixel widths
+  
+- **Spacing**: `p--1`, `p--2`, `mb--xsmall`, `mb--small`, `mb--medium`, `mb--large`, `my--24`
 
 **Best Practice**: Use `flex: 1` inline style for flexible sizing within containers:
 ```liquid
@@ -174,8 +184,10 @@ Pattern: `size:orientation:bit-depth:utility`
 #### Typography
 
 - **Title**: `title title--small`, `title--medium`, `title--large`, `title--xlarge` (for headings, names)
-- **Value**: `value value--small`, `value--medium`, `value--large`, `value--xlarge`, `value--xxlarge`, `value--xxxlarge` (for numbers, symbols)
-- **Label**: `label label--small`, `label--inverted` (for categories, badges)
+- **Value**: `value value--xxsmall`, `value--xsmall`, `value--small`, `value--medium`, `value--large`, `value--xlarge`, `value--xxlarge`, `value--xxxlarge` (for numbers, symbols)
+  - **Tabular Numbers**: Add `value--tnums` for aligned numeric display
+  - `<span class="value value--large value--tnums">1,234.56</span>`
+- **Label**: `label label--small`, `label--outline`, `label--underline`, `label--inverted` (for categories, badges)
 - **Description**: `description` (for body text)
 
 **Best Practice**: Scale typography with breakpoints:
@@ -186,10 +198,19 @@ Pattern: `size:orientation:bit-depth:utility`
 
 #### Visual
 
-- **Background**: `bg--white`, `bg--gray-50`, `bg--gray-75`
-- **Border**: `outline`, `rounded`, `rounded--large`
-- **Alignment**: `text--center`, `text--left`, `text--right`
+- **Background**: Full grayscale support from `bg--black` to `bg--white`
+  - `bg--gray-10`, `bg--gray-15`, `bg--gray-20`...`bg--gray-75` (16 total shades)
+  - Perfect for bit-depth targeting: `1bit:bg--black 2bit:bg--gray-45 4bit:bg--gray-75`
+  
+- **Border**: `outline`, `rounded`, `rounded--large`, `border--h-6`, `border--v-6`
+  - Modern dividers: `divider`, `divider--on-light` (auto background detection)
+  - Use `divider` instead of old `border--h-x w--full` patterns
+  
+- **Alignment**: `text--center`, `text--left`, `text--right`, `content--center`, `content--left`, `content--right`
 - **Effects**: `text-stroke`, `text-stroke--large` (for text on images)
+- **Visibility**: `hidden`, `block`, `flex`, `grid`, `inline-flex`, `table`
+  - Combine with responsive: `hidden md:block lg:flex`
+  - Device-specific: `md:1bit:block md:2bit:flex lg:4bit:grid`
 
 #### Images
 
@@ -208,13 +229,26 @@ Pattern: `size:orientation:bit-depth:utility`
 - **data-value-fit**: Automatically resizes text to fit container
   - `data-value-fit="true"` - Enable fitting
   - `data-value-fit-max-height="120"` - Set maximum height
+  - Perfect for headlines that need to scale based on content length
+  
 - **data-clamp**: Truncate text to specific lines
   - `data-clamp="1"` - Show 1 line, truncate rest
   - `data-clamp="2"` - Show 2 lines, truncate rest
+  
+- **data-content-limiter**: Auto-adjust text size for overflowing content
+  - `data-content-limiter="true"` - Enable for Rich Text components
+  - Automatically scales text when content exceeds available height
 
 **Best Practice**: Use `data-clamp` for captions and descriptions:
 ```liquid
 <span class="description" data-clamp="2">{{ long_caption }}</span>
+```
+
+**Fit Value Example**:
+```liquid
+<span class="value value--xxxlarge" data-value-fit="true" data-value-fit-max-height="340">
+  {{ long_headline }}
+</span>
 ```
 
 ## Layout System
@@ -447,13 +481,16 @@ Use consistent padding unless space constraints require reduction.
 
 ### 7. Data Formatting Best Practices
 
-**Numbers**:
+**Numbers with Tabular Alignment**:
 ```liquid
+<!-- Tabular numbers for precise alignment -->
+<span class="value value--large value--tnums">{{ number | number_with_delimiter }}</span>
+
 <!-- With thousands separator -->
 {{ number | divided_by: 1.0 | round: 0 | number_with_delimiter }}
 
-<!-- Percentage -->
-{{ value | times: 100 | round: 1 }}%
+<!-- Percentage with styling -->
+<span class="value">{{ value | times: 100 | round: 1 }}%</span>
 ```
 
 **Dates**:
@@ -468,14 +505,159 @@ Use consistent padding unless space constraints require reduction.
 {{ timestamp | date: "%Y" }}
 ```
 
-**Text Truncation**:
+**Text Handling**:
 ```liquid
-<!-- With data-clamp -->
+<!-- Dynamic scaling for long text -->
+<span class="value value--xxxlarge" data-value-fit="true" data-value-fit-max-height="340">
+  {{ long_headline }}
+</span>
+
+<!-- Line clamping -->
 <span class="description" data-clamp="2">{{ long_text }}</span>
 
-<!-- With Liquid filter -->
+<!-- Truncation filter -->
 {{ long_text | truncate: 100 }}
 ```
+
+## Advanced Layout Patterns
+
+### 1. Rich Text Component
+
+For complex, formatted content with multiple paragraphs:
+
+```liquid
+<div class="richtext richtext--center gap--large">
+  <img class="image" src="{{ icon_url }}">
+  <div class="content content--center gap text--center">
+    <p>Heading or main content</p>
+    <p>Supporting details or description</p>
+  </div>
+</div>
+```
+
+**Features**:
+- Alignment options: `richtext--left`, `richtext--center`, `richtext--right`
+- Size variants: `content--small`, `content`, `content--large`
+- Width control: Use `w--[240px]` for fixed widths
+- Content limiting: Add `data-content-limiter="true"` to auto-scale text
+
+### 2. Grid-Based Layouts
+
+For complex multi-item displays:
+
+```liquid
+<div class="grid grid--cols-2 gap--medium">
+  <div class="item">
+    <div class="meta"><!-- Optional metadata --></div>
+    <div class="content">
+      <span class="value value--large">42</span>
+      <span class="label">Metric</span>
+    </div>
+  </div>
+  <!-- Additional items -->
+</div>
+```
+
+**Features**:
+- Flexible columns: `grid--cols-1` through `grid--cols-4`
+- Responsive columns: `grid--cols-2 md:grid--cols-3 lg:grid--cols-4`
+- Column spanning: `col--span-2` spans 2 columns
+- Positioning: `row--start`, `row--center`, `row--end`, `col--start`, etc.
+
+### 3. Progress Indicators
+
+For showing status or progress:
+
+```liquid
+<!-- Progress Bar -->
+<div class="progress-bar progress-bar--small">
+  <div class="content">
+    <span class="label">Progress</span>
+    <span class="value value--xxsmall">{{ percentage }}%</span>
+  </div>
+  <div class="track">
+    <div class="fill" style="width: {{ percentage }}%"></div>
+  </div>
+</div>
+
+<!-- Progress Dots -->
+<div class="progress-dots progress-dots--small">
+  <div class="track">
+    <div class="dot dot--filled"></div>
+    <div class="dot dot--current"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+```
+
+**Sizes**: `--small`, (default), `--large`
+
+### 4. Advanced Device-Specific Layouts
+
+Optimize for different device capabilities:
+
+```liquid
+<!-- Show different layouts based on device -->
+<div class="hidden md:1bit:block md:2bit:flex lg:4bit:grid">
+  <!-- Simplified layout for 1-bit, enhanced for 4-bit -->
+</div>
+
+<!-- Progressive enhancement pattern -->
+<div class="flex flex--col portrait:flex--row md:1bit:flex--col md:2bit:grid md:4bit:grid--cols-2">
+  <!-- Adapts to orientation, size, AND bit-depth -->
+</div>
+```
+
+**Pattern**: `size:orientation:bit-depth:utility`
+
+### 5. Divider Component (Modern)
+
+Replace borders with dividers:
+
+```liquid
+<!-- Old way (still works) -->
+<!-- <div class="border--h-6 w--full"></div> -->
+
+<!-- New way (recommended) -->
+<div class="divider"></div>
+
+<!-- With explicit background -->
+<div class="divider--on-light"></div>
+```
+
+### 6. Inline Flex for Mixed Content
+
+For text with inline elements:
+
+```liquid
+<span>Text before</span>
+<div class="inline-flex flex--row gap">
+  <div>•</div>
+  <div>•</div>
+</div>
+<span>Text after</span>
+```
+
+### 7. Content Overflow Handling
+
+For lists and overflow content:
+
+```liquid
+<div class="columns" data-overflow-max-cols="3">
+  <div class="column" data-list-limit="true" data-list-max-height="340">
+    <span class="label group-header" data-group-header="true">Section 1</span>
+    <!-- Items here -->
+    <span class="label group-header" data-group-header="true">Section 2</span>
+    <!-- Items here -->
+  </div>
+</div>
+```
+
+**Attributes**:
+- `data-list-limit="true"` - Enable overflow handling
+- `data-list-max-height="340"` - Set height budget
+- `data-list-hidden-count="true"` - Show count of hidden items
+- `data-overflow-max-cols="3"` - Max columns before overflow
 
 ## Common Issues & Solutions
 
@@ -787,34 +969,51 @@ Example ideas:
 
 ```liquid
 <!-- Layout -->
-flex flex--row flex--col flex--center-x flex--center-y flex--between
-grid grid--cols-2 grid--cols-3
-gap--xsmall gap--small gap--medium gap--large
-h--full w--full
+flex flex--row flex--col flex--center-x flex--center-y flex--between inline-flex
+self--start self--center self--end self--stretch
+grid grid--cols-1 grid--cols-2 grid--cols-3 grid--cols-4
+row--start row--center row--end col--start col--center col--end col--span-1 col--span-2
+gap--xsmall gap--small gap--medium gap--large gap--xlarge
+h--full w--full w--auto h--auto w--min-72 w--max-32
 
 <!-- Typography -->
 title title--small title--medium title--large title--xlarge
-value value--small value--medium value--large value--xlarge value--xxlarge
-label label--small label--inverted
+value value--xxsmall value--xsmall value--small value--medium value--large value--xlarge value--xxlarge value--xxxlarge
+value--tnums (for tabular numbers)
+label label--small label--outline label--underline label--inverted
 description
 
 <!-- Spacing -->
-p--1 p--2 mb--xsmall mb--small mb--medium
-h--5 h--6
+p--1 p--2 mb--xsmall mb--small mb--medium mb--large
+h--5 h--6 w--8 through w--96
 
 <!-- Visual -->
-bg--white bg--gray-50 bg--gray-75
+bg--black bg--gray-10 through bg--gray-75 bg--white
 rounded rounded--large
 text--center text--left text--right
 text-stroke text-stroke--large
+divider divider--on-light
 
 <!-- Images -->
 image image--contain image--cover image-dither
+
+<!-- Visibility -->
+hidden block flex grid table inline-flex
+
+<!-- Progress -->
+progress-bar progress-bar--small progress-bar--large
+progress-dots progress-dots--small progress-dots--large
 
 <!-- Responsive -->
 sm: md: lg:
 portrait: landscape:
 1bit: 2bit: 4bit: 8bit:
+
+<!-- Special Modulations -->
+data-value-fit="true" data-value-fit-max-height="340"
+data-clamp="2"
+data-content-limiter="true"
+value--tnums
 ```
 
 ### Common Liquid Patterns
@@ -824,23 +1023,32 @@ portrait: landscape:
 {% if variable %}...{% endif %}
 {% unless variable %}...{% endunless %}
 {% if variable %}...{% else %}...{% endif %}
+{% case variable %}
+{% when "value" %}...{% endcase %}
 
 <!-- Loops -->
 {% for item in items %}...{% endfor %}
+{% for item in items limit: 5 %}...{% endfor %}
 
 <!-- Filters -->
 {{ text | truncate: 100 }}
 {{ number | number_with_delimiter }}
+{{ number | divided_by: 1.0 | round: 0 | number_with_delimiter }}
 {{ date | date: "%B %d, %Y" }}
 {{ date | relative_time }}
 {{ text | default: "fallback" }}
+{{ value | times: 100 | round: 1 }}
 
 <!-- Reusable templates -->
 {% template component_name %}...{% endtemplate %}
 {% render "component_name", param: value %}
+{% render "shared", template_name: "component_name", param: value %}
 
 <!-- Comments -->
 {% comment %}Your comment here{% endcomment %}
+
+<!-- String interpolation -->
+{{ "String with " | append: variable }}
 ```
 
 ---
