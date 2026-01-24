@@ -71,7 +71,13 @@
   {% else %}
   
   {% comment %} Display error state when plugin is unconfigured {% endcomment %}
-  {% render "shared", template_name: "error_state", size: "full" %}
+  <div class="flex flex--col flex--center-x flex--center-y gap--medium h--full">
+    <div class="value value--large md:value--xlarge text--center">⚙️</div>
+    <div class="title title--medium md:title--large text--center">Setup Required</div>
+    <div class="description md:title md:title--small text--center">
+      Please configure this plugin with your API key and settings to begin.
+    </div>
+  </div>
   
   {% endif %}
 </div>
