@@ -107,7 +107,7 @@ Replace the example content with your actual plugin display:
 
 ## Step 4: Test in TRMNL Markup Editor
 
-1. Go to [editor.usetrmnl.com](https://editor.usetrmnl.com)
+1. Go to [editor.trmnl.com](https://editor.trmnl.com)
 2. Copy your template code into the editor
 3. Add your sample JSON data:
    ```json
@@ -305,8 +305,8 @@ portrait:
 
 ## Need Help?
 
-- Check [TRMNL Framework Docs](https://usetrmnl.com/framework)
-- Read [Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-plugin-guides)
+- Check [TRMNL Framework Docs](https://trmnl.com/framework)
+- Read [Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides)
 - Review [Liquid Documentation](https://shopify.github.io/liquid/)
 - Check `.github/copilot-instructions.md` for project-specific guidance
 
