@@ -1,12 +1,12 @@
 # TRMNL Plugin Template
 
-A complete, production-ready starter template for building custom plugins for [TRMNL](https://usetrmnl.com) devices. This template provides everything you need to create, test, and deploy a TRMNL plugin.
+A complete, production-ready starter template for building custom plugins for [TRMNL](https://trmnl.com) devices. This template provides everything you need to create, test, and deploy a TRMNL plugin.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Understanding of [TRMNL Framework](https://usetrmnl.com/framework)
+- Understanding of [TRMNL Framework](https://trmnl.com/framework)
 - Familiarity with [Liquid templating](https://shopify.github.io/liquid/)
 - A backend service for data fetching (for polling strategy)
 
@@ -28,7 +28,7 @@ A complete, production-ready starter template for building custom plugins for [T
    - Follow the [Template Usage Guide](https://github.com/hossain-khan/trmnl-plugin-template/blob/main/.github/TEMPLATE_USAGE.md)
 
 4. **Test in TRMNL Markup Editor**:
-   - Copy a template to the [TRMNL Markup Editor](https://editor.usetrmnl.com)
+   - Copy a template to the [TRMNL Markup Editor](https://editor.trmnl.com)
    - Preview across different device sizes
    - Test with sample data
 
@@ -218,7 +218,7 @@ Template accesses via:
 
 ### Using TRMNL Markup Editor
 
-1. Go to [editor.usetrmnl.com](https://editor.usetrmnl.com)
+1. Go to [editor.trmnl.com](https://editor.trmnl.com)
 2. Copy your template code (e.g., from `full.liquid`)
 3. Add sample JSON data under "Data" section
 4. Preview across device sizes using device selector
@@ -258,11 +258,11 @@ Template accesses via:
 ## 📚 Development Resources
 
 ### TRMNL Documentation
-- [Framework Design Docs](https://usetrmnl.com/framework) - Complete design system reference
-- [Device Models API](https://usetrmnl.com/api/models) - Device specifications
-- [Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-plugin-guides) - How-to guides
-- [Liquid 101](https://help.usetrmnl.com/en/articles/10671186-liquid-101) - Liquid basics
-- [Advanced Liquid](https://help.usetrmnl.com/en/articles/10693981-advanced-liquid) - Advanced techniques
+- [Framework Design Docs](https://trmnl.com/framework) - Complete design system reference
+- [Device Models API](https://trmnl.com/api/models) - Device specifications
+- [Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides) - How-to guides
+- [Liquid 101](https://help.trmnl.com/en/articles/10671186-liquid-101) - Liquid basics
+- [Advanced Liquid](https://help.trmnl.com/en/articles/10693981-advanced-liquid) - Advanced techniques
 
 ### Responsive Breakpoints
 
@@ -338,7 +338,7 @@ When creating your plugin:
 
 ### Publishing to TRMNL
 
-1. Create a plugin recipe in [TRMNL Dashboard](https://app.usetrmnl.com)
+1. Create a plugin recipe in [TRMNL Dashboard](https://app.trmnl.com)
 2. Upload template files:
    - All 5 `.liquid` files
    - Icons and assets
@@ -376,9 +376,9 @@ Please open an issue or pull request.
 
 ## 📞 Getting Help
 
-- Check the [TRMNL Framework docs](https://usetrmnl.com/framework)
+- Check the [TRMNL Framework docs](https://trmnl.com/framework)
 - Review the [copilot-instructions.md](.github/copilot-instructions.md)
-- Check [TRMNL Help Center](https://help.usetrmnl.com)
+- Check [TRMNL Help Center](https://help.trmnl.com)
 - Open an issue in this repository
 
 ---

@@ -29,7 +29,7 @@ For developers working on this project:
    - `README.md` - Project overview and installation
    - [List any other relevant documentation files]
 3. **Test Templates**: Preview layouts in TRMNL Markup Editor or locally
-4. **Review Framework**: Familiarize yourself with [TRMNL Framework](https://usetrmnl.com/framework)
+4. **Review Framework**: Familiarize yourself with [TRMNL Framework](https://trmnl.com/framework)
 
 ## Project Structure
 
@@ -83,7 +83,7 @@ your-plugin-name/
 ### Device Specifications
 
 > **Note**: Dimensions shown are **logical CSS dimensions** (scaled for consistent rendering).
-> Physical resolutions may differ. See [Device Models API](https://usetrmnl.com/api/models) for complete specifications.
+> Physical resolutions may differ. See [Device Models API](https://trmnl.com/api/models) for complete specifications.
 
 | Device      | Width  | Height | Bit Depth | Display Type           | Breakpoint |
 | ----------- | ------ | ------ | --------- | ---------------------- | ---------- |
@@ -97,7 +97,7 @@ your-plugin-name/
 **BYOD Devices** (18+): Kobo, Inkplate, Waveshare, M5Paper, Onyx Boox, and more  
 **Total Supported**: 27+ devices
 
-**Reference**: [Device Models API](https://usetrmnl.com/api/models) • [Framework Documentation](https://usetrmnl.com/framework)
+**Reference**: [Device Models API](https://trmnl.com/api/models) • [Framework Documentation](https://trmnl.com/framework)
 
 ### Responsive System
 
@@ -842,7 +842,7 @@ Use TRMNL Markup Editor's device preview to test all sizes.
 
 ### From TRMNL Plugin Guides
 
-Based on [TRMNL Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-plugin-guides):
+Based on [TRMNL Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides):
 
 1. **Recipe Best Practices**:
    - Provide clear plugin description and purpose
@@ -856,11 +856,11 @@ Based on [TRMNL Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-
    - Add validation where needed
    - Provide helpful descriptions
    - Use conditional visibility for related fields
-   - See [Custom Plugin Form Builder](https://help.usetrmnl.com/en/articles/10513740-custom-plugin-form-builder)
+   - See [Custom Plugin Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder)
 
 3. **Liquid Best Practices**:
-   - Learn Liquid basics: [Liquid 101](https://help.usetrmnl.com/en/articles/10671186-liquid-101)
-   - Advanced techniques: [Advanced Liquid](https://help.usetrmnl.com/en/articles/10693981-advanced-liquid)
+   - Learn Liquid basics: [Liquid 101](https://help.trmnl.com/en/articles/10671186-liquid-101)
+   - Advanced techniques: [Advanced Liquid](https://help.trmnl.com/en/articles/10693981-advanced-liquid)
    - Use filters for data formatting
    - Use loops for repeating content
    - Use conditionals for dynamic content
@@ -868,11 +868,11 @@ Based on [TRMNL Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-
 4. **Debugging**:
    - Use browser dev tools for markup debugging
    - Check network tab for polling/webhook issues
-   - See [Debugging Private Plugins](https://help.usetrmnl.com/en/articles/11586187-debugging-private-plugins)
+   - See [Debugging Private Plugins](https://help.trmnl.com/en/articles/11586187-debugging-private-plugins)
    - Test with demo data before live data
 
 5. **Framework Design**:
-   - Study [Framework Design Docs](https://help.usetrmnl.com/en/articles/12410486-framework-design-docs)
+   - Study [Framework Design Docs](https://help.trmnl.com/en/articles/12410486-framework-design-docs)
    - Use built-in utilities over custom CSS
    - Follow responsive patterns
    - Optimize for e-ink displays
@@ -916,9 +916,9 @@ Based on [TRMNL Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-
 
 **Resources**:
 
-- [TRMNL Framework](https://usetrmnl.com/framework) - Complete design system documentation
-- [Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-plugin-guides) - How-to guides and best practices
-- [Device Models API](https://usetrmnl.com/api/models) - Device specifications
+- [TRMNL Framework](https://trmnl.com/framework) - Complete design system documentation
+- [Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides) - How-to guides and best practices
+- [Device Models API](https://trmnl.com/api/models) - Device specifications
 - [Liquid Documentation](https://shopify.github.io/liquid/) - Liquid template language reference
 
 ## Workflow

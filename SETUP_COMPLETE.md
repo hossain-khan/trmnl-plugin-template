@@ -58,7 +58,7 @@ trmnl-plugin-template/
    - Update `.github/copilot-instructions.md` with project details
 
 3. **Test in TRMNL Markup Editor**:
-   - Copy templates to [editor.usetrmnl.com](https://editor.usetrmnl.com)
+   - Copy templates to [editor.trmnl.com](https://editor.trmnl.com)
    - Test with sample data
 
 4. **Deploy**:
@@ -171,9 +171,9 @@ When cloning this template for a new plugin:
 
 ## Framework Resources
 
-- [TRMNL Framework Docs](https://usetrmnl.com/framework) - Complete reference
-- [Device Models API](https://usetrmnl.com/api/models) - Device specifications
-- [Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-plugin-guides) - How-tos
+- [TRMNL Framework Docs](https://trmnl.com/framework) - Complete reference
+- [Device Models API](https://trmnl.com/api/models) - Device specifications
+- [Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides) - How-tos
 - [Liquid Docs](https://shopify.github.io/liquid/) - Template language
 
 ## Support & Customization
@@ -187,7 +187,7 @@ Follow [.github/TEMPLATE_USAGE.md](.github/TEMPLATE_USAGE.md) to customize for y
 1. Check [GETTING_STARTED.md](GETTING_STARTED.md) for step-by-step guidance
 2. Review [README.md](README.md) for comprehensive documentation
 3. Check [.github/copilot-instructions.md](.github/copilot-instructions.md) for patterns
-4. Consult [TRMNL Framework Docs](https://usetrmnl.com/framework)
+4. Consult [TRMNL Framework Docs](https://trmnl.com/framework)
 
 ## Version History
 

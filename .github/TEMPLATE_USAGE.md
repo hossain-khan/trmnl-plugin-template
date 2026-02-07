@@ -193,8 +193,8 @@ For a todo list plugin, you might:
 If you need help using this template:
 
 1. Review the existing `copilot-instructions.md` file for examples
-2. Check the [TRMNL Framework documentation](https://usetrmnl.com/framework)
-3. Review [TRMNL Plugin Guides](https://help.usetrmnl.com/en/collections/7820559-plugin-guides)
+2. Check the [TRMNL Framework documentation](https://trmnl.com/framework)
+3. Review [TRMNL Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides)
 4. Look at other TRMNL plugin repositories for inspiration
 5. Open an issue in this repository if you have questions
 
