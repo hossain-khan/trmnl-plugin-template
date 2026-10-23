@@ -1,93 +1,46 @@
 {% comment %}
   ============================================================================
-  HALF_HORIZONTAL.LIQUID - Half-size Horizontal Layout Template
+  HALF_HORIZONTAL.LIQUID - Half-size Horizontal Banner (800x240)
   ============================================================================
-  Use this template for side-by-side content on half-width displays.
-  
-  Best For:
-  - Two-column layouts (data + details)
-  - Comparative displays
-  - Side-by-side information
-  
-  Device Sizes: Works across all devices (sm, md, lg)
-  Padding: p--2 (standard)
-  Responsive: Switches to vertical (flex--col) in portrait mode
-  
-  Structure:
-  - Two flex columns with gap
-  - Portrait fallback to column layout
-  - Compact spacing for limited width
+  Framework: TRMNL Framework 3.4 (https://trmnl.com/framework/docs/3.4)
+  Mashup Slot: Top or bottom half of a 1Tx1B stacked mashup
+  Usable Content Height: ~144px (wide and shallow banner)
+
+  View Adaptation Strategy (Section 15 of Template Guide):
+  - Very wide (800px), very shallow (~144px height).
+  - Columnize everything horizontally using `grid` with `col--span-{N}` or
+    `grid--cols-{N}`. Avoid vertical stacking so content does not overflow.
   ============================================================================
 {% endcomment %}
 
-<div class="layout">
-  {% comment %} Check if data is available {% endcomment %}
+<div class="layout layout--row gap--medium">
   {% if has_data %}
-  
-  {% comment %} 
-    Row layout on landscape, column on portrait
-    Left side: main content (flex: 1)
-    Right side: details (fixed or constrained width)
+
+  {% comment %}
+    12-column proportional Grid split:
+    - Left 5 columns: Hero metric
+    - Right 7 columns: 3 side-by-side detail items
   {% endcomment %}
-  <div class="flex flex--row gap--medium portrait:flex--col flex--center-y h--full">
-    
-    {% comment %} Main content area - left side on landscape {% endcomment %}
-    <div class="flex flex--center-x flex--center-y" style="flex: 1;">
-      <div class="text--center">
-        <div class="value value--medium md:value--large lg:value--xlarge value--tnums" data-value-fit="true" data-value-fit-max-height="180">
-          42
-        </div>
-        <div class="title title--small md:title--medium">
-          Main Value
-        </div>
-      </div>
+  <div class="grid gap--medium w--full">
+    <div class="col--span-5 flex flex--col flex--center-y gap--xsmall">
+      <span class="value value--large md:value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">
+        {{ value | default: "42" }}
+      </span>
+      <span class="title title--small" data-clamp="1">
+        {{ title | default: "Example Value" }}
+      </span>
     </div>
 
-    {% comment %} Visual separator for landscape view {% endcomment %}
-    <div class="hidden portrait:hidden md:block">
-      <div class="divider portrait:hidden"></div>
-    </div>
-
-    {% comment %} Secondary content area - right side on landscape {% endcomment %}
-    <div class="grid grid--cols-1 gap--xsmall portrait:gap--small portrait:grid--cols-3" style="max-width: 200px; portrait:max-width: 100%;">
-      <div class="item text--center">
-        <div class="meta"></div>
-        <div class="content">
-          <div class="label label--small">Detail 1</div>
-          <div class="value value--small md:value--medium value--tnums">100</div>
-        </div>
-      </div>
-      <div class="item text--center">
-        <div class="meta"></div>
-        <div class="content">
-          <div class="label label--small">Detail 2</div>
-          <div class="value value--small md:value--medium value--tnums">50</div>
-        </div>
-      </div>
-      <div class="item text--center">
-        <div class="meta"></div>
-        <div class="content">
-          <div class="label label--small">Detail 3</div>
-          <div class="value value--small md:value--medium value--tnums">75</div>
-        </div>
-      </div>
+    <div class="col--span-7 grid grid--cols-3 gap--small">
+      {% render "metric_item", value: detail_1, label: "Metric 1" %}
+      {% render "metric_item", value: detail_2, label: "Metric 2" %}
+      {% render "metric_item", value: detail_3, label: "Metric 3" %}
     </div>
   </div>
 
   {% else %}
-  
-  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
-  <div class="flex flex--col flex--center-x flex--center-y gap--small h--full">
-    <div class="value value--medium md:value--large">⚙️</div>
-    <div class="title title--small md:title--medium text--center">Setup Required</div>
-    <div class="description text--center">Configure plugin to begin.</div>
-  </div>
-  
+    {% render "error_state", size: "half_horizontal" %}
   {% endif %}
 </div>
 
-{% comment %} Title bar at bottom {% endcomment %}
-<div class="title_bar">
-  <span class="title md:title--medium">Example Plugin</span>
-  <span class="instance">Half Horizontal</span>
-</div>
+{% render "title_bar", icon: plugin_icon_data_uri, title: resolved_title, instance: resolved_instance %}

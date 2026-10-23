@@ -1,74 +1,117 @@
-# Plugin Configuration
-# 
-# This file configures how your TRMNL plugin behaves:
-# - How data is fetched (polling_url, webhook, static)
-# - How often the display refreshes (refresh_frequency)
-# - Which layouts are available
-# - Plugin metadata
+# ============================================================================
+# TRMNL Private Plugin Configuration (settings.yml)
+# ============================================================================
+# Reference:
+# - Private Plugins: https://help.trmnl.com/en/articles/9510536-private-plugins
+# - Plugin Strategies: https://help.trmnl.com/en/articles/17434705-plugin-strategies
+# - Import/Export Spec: https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins
+# - Custom Form Builder: https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder
+# - Local Dev CLI (trmnlp): https://github.com/usetrmnl/trmnlp
+# ============================================================================
+---
+# Plugin Name (for organizing in Playlists and Plugins list)
+name: Example Plugin
 
-# Strategy: How to fetch data
-# Options: "polling" (TRMNL fetches), "webhook" (you push), "static" (hardcoded)
-strategy: "polling"
+# Optional one-line summary (up to 35 characters; checked by `trmnlp lint`)
+description: Template plugin for TRMNL devices
 
-# Polling URL: Endpoint TRMNL calls to fetch data (required for polling strategy)
-# TRMNL will make GET requests at refresh_frequency intervals
-# Response should be JSON with your template variables
-polling_url: "https://your-api.example.com/plugin/data"
+# Pin TRMNL Design System version ("latest" or specific version like "3.4.0")
+# Docs: https://trmnl.com/framework/docs/3.4
+framework_version: "3.4.0"
 
-# Refresh Frequency: How often to fetch data (in minutes)
-# Range: 1-1440 minutes (1 minute to 24 hours)
-# Lower = more frequent updates, higher = less battery drain
-refresh_frequency: 15
+# Data Strategy: How data reaches TRMNL before rendering
+# Options:
+# - polling:       TRMNL fetches your URL(s) on a schedule (JSON, XML, RSS, CSV, plain text)
+# - webhook:       Your service POSTs {"merge_variables": {...}} to TRMNL's webhook URL (max 5KB, 10KB on TRMNL+)
+# - plugin_merge:  Combines data already fetched by other plugins on your account
+# - static:        Hardcoded JSON string in `static_data`
+# - async_polling: Server responds HTTP 202 immediately, then POSTs to {{ callback_url }} within 15m
+# - none:          No external data (uses `trmnl.*` globals or client-side JS only)
+strategy: polling
 
-# Available Layouts: Which template layouts this plugin supports
-# All plugins should provide at least the 'full' layout
-# Optional layouts: half_horizontal, half_vertical, quadrant
-layouts:
-  - full
-  - half_horizontal
-  - half_vertical
-  - quadrant
+# Refresh Interval / Fastest Refresh Rate (in minutes)
+# Standard options: 15 | 30 | 60 | 180 | 360 | 720 | 1440 (5m available with TRMNL+)
+refresh_interval: 15
 
-# Plugin Metadata
-name: "Example Plugin"
-description: "A template plugin for TRMNL devices"
-author: "Your Name"
-version: "1.0.0"
+# ============================================================================
+# Polling Strategy Configuration (used when strategy is 'polling' or 'async_polling')
+# ============================================================================
+# Provide 1 or more URLs (line-break separated).
+# - Single URL: fields are available at root (e.g., {{ value }}, or {{ data[0] }} if root is an array)
+# - Multiple URLs: available under indexed nodes ({{ IDX_0.field }}, {{ IDX_1.field }})
+# - Supports Liquid interpolation of custom fields ({{ api_key }}) and globals ({{ trmnl.user.first_name }})
+# - Quick test endpoint: https://trmnl.com/custom_plugin_example_data.json
+polling_url: "https://trmnl.com/custom_plugin_example_data.json"
 
-# Tap Action: URL to open when user taps plugin (optional)
-# Leave empty or remove if not needed
-tap_action_url: ""
+# HTTP Method for Polling: GET | POST
+polling_verb: GET
 
-# Developer Notes:
-# 
-# 1. POLLING STRATEGY (used in this template)
-#    - TRMNL sends GET requests to polling_url at refresh_frequency intervals
-#    - Your backend should return JSON with template variables
-#    - Example response:
-#    {
-#      "title": "Current Value",
-#      "value": 42,
-#      "has_data": true,
-#      "status": "success"
-#    }
-#
-# 2. WEBHOOK STRATEGY
-#    - You push data to TRMNL when it changes
-#    - Lower latency, more immediate updates
-#    - Requires authentication setup in TRMNL dashboard
-#
-# 3. REFRESH FREQUENCY
-#    - 1-5 minutes: Very responsive, higher battery usage
-#    - 5-30 minutes: Balanced, good for most use cases
-#    - 30+ minutes: Low battery impact, delayed updates
-#
-# 4. LAYOUT SELECTION
-#    - full: Entire screen (default)
-#    - half_horizontal: Side-by-side layout
-#    - half_vertical: Stacked layout
-#    - quadrant: Compact corner display
-#
-# 5. ERROR HANDLING
-#    - Always include error states in your templates
-#    - Check for missing/invalid data with {% if has_data %}
-#    - Provide fallback content
+# Polling Headers (optional)
+# One header per line as `Name: Value` or `name=value`.
+# Supports custom field interpolation (e.g., `authorization=Bearer {{ api_key }}`).
+# Note: Encode literal `=` in header values as `%3D` or use `{{ api_key | url_encode }}`.
+polling_headers: ""
+
+# Polling Body (optional, JSON string for POST requests; supports Liquid interpolation)
+polling_body: ""
+
+# ============================================================================
+# Static Strategy Configuration (used when strategy is 'static')
+# ============================================================================
+static_data: '{"has_data": true, "title": "Example Value", "value": 42, "status": "success"}'
+
+# ============================================================================
+# Display Options (quotes around 'no' / 'yes' are required in YAML!)
+# ============================================================================
+# Remove Bleed Margin (removes the default 5-10px screen padding for edge-to-edge images)
+no_screen_padding: 'no'
+
+# Dark Mode ('yes' inverts screen colors; note: active Framework v3 themes override dark_mode)
+dark_mode: 'no'
+
+# ============================================================================
+# Custom Plugin Form Fields (optional)
+# ============================================================================
+# Accessed in templates via: {{ trmnl.plugin_settings.custom_fields_values.keyname }}
+# Accessed in polling_url / polling_headers / polling_body via: {{ keyname }}
+# Full reference and additional examples in `custom-fields.yml`
+custom_fields:
+  - keyname: about
+    name: About This Plugin
+    field_type: author_bio
+    category: productivity,utilities
+    description: A starter template plugin built on TRMNL Framework 3.4.
+    github_url: https://github.com/hossain-khan/trmnl-plugin-template
+    learn_more_url: https://help.trmnl.com/en/articles/9510536-private-plugins
+
+  - keyname: api_key
+    field_type: password
+    name: API Key
+    description: Required for authenticating with the data service
+    placeholder: Enter your API key
+    optional: true
+
+  - keyname: data_source
+    field_type: select
+    name: Data Source
+    description: Select which data source to display (values are stored lowercase)
+    options:
+      - Source A
+      - Source B
+      - Source C
+    default: source_a
+    optional: true
+
+  - keyname: show_details
+    field_type: boolean
+    name: Show Additional Details
+    description: Display secondary metrics in the layout
+    default: true
+    optional: true
+
+  - keyname: custom_title
+    field_type: string
+    name: Custom Plugin Title
+    description: Leave blank to use the plugin instance name
+    placeholder: Example Plugin
+    optional: true

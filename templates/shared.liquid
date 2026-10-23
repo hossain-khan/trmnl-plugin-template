@@ -1,152 +1,117 @@
 {% comment %}
   ============================================================================
-  SHARED.LIQUID - Reusable Components and Assets
+  SHARED.LIQUID - Reusable Components, Variables, and Inline Assets
   ============================================================================
-  This file contains:
-  - Reusable template components
-  - Base64-encoded icons and assets
-  - Common variables and logic
-  - Utility templates
+  Framework Version: TRMNL Framework 3.4 (https://trmnl.com/framework/docs/3.4)
+  Advanced Liquid:   https://help.trmnl.com/en/articles/10693981-advanced-liquid
+  Custom Filters:    https://help.trmnl.com/en/articles/10347358-custom-plugin-filters
 
-  Usage: {% render "shared", template_name: "component_name", param: value %}
+  This file runs BEFORE any view template (full, half_horizontal, half_vertical,
+  quadrant). Use it to:
+  - Assign shared variables and custom field defaults
+  - Capture inline 24x24 SVG icons (avoids external network requests)
+  - Define reusable partials with `{% template name %}...{% endtemplate %}`
+
+  Usage in view templates:
+    {% render "error_state", size: "full" %}
+    {% render "title_bar", custom_title: custom_title, instance: instance_label %}
   ============================================================================
 {% endcomment %}
 
 {% comment %}
   ============================================================================
+  SHARED VARIABLES & CUSTOM FIELD RESOLUTION
+  ============================================================================
+{% endcomment %}
+{% assign custom_title = trmnl.plugin_settings.custom_fields_values.custom_title %}
+{% assign show_details = trmnl.plugin_settings.custom_fields_values.show_details | default: true %}
+{% assign resolved_title = custom_title | default: trmnl.plugin_settings.instance_name | default: title | default: "Example Plugin" %}
+
+{% comment %}
+  Compute localized timestamp in the user's local timezone using `trmnl.user.utc_offset`
+  See: https://help.trmnl.com/en/articles/10693981-advanced-liquid
+{% endcomment %}
+{% assign utc_offset = trmnl.user.utc_offset | default: 0 %}
+{% assign local_time = "now" | date: "%s" | plus: utc_offset | date: "%H:%M" %}
+{% assign updated_word = "updated" | l_word: trmnl.user.locale | default: "Updated" %}
+{% assign default_instance = updated_word | append: " " | append: local_time %}
+{% assign resolved_instance = metadata | default: default_instance %}
+
+{% comment %}
+  ============================================================================
+  INLINE SVG LOGO (24x24) FOR TITLE BAR
+  ============================================================================
+  Using inline SVG encoded with `base64_encode` + `image--adaptive` ensures the
+  icon loads reliably offline and automatically adapts to dark mode and themes
+  in TRMNL Framework 3.4.
+{% endcomment %}
+{%- capture svg_logo -%}
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="3" width="18" height="18" rx="3"/>
+  <path d="M7 15l4-4 3 3 4-5"/>
+</svg>
+{%- endcapture -%}
+{% assign plugin_icon_data_uri = svg_logo | base64_encode | prepend: "data:image/svg+xml;base64," %}
+
+{% comment %}
+  ============================================================================
   ERROR STATE COMPONENT
   ============================================================================
-  Displays helpful error message when plugin is unconfigured
-  Parameters: size (full, half, quadrant)
+  Displays a clean, ePaper-safe (emoji-free, inline-style-free) message when
+  the plugin is unconfigured or data is unavailable.
+  Parameters:
+  - size: "full" | "half_horizontal" | "half_vertical" | "quadrant"
+  - message: optional custom message
 {% endcomment %}
 {% template error_state %}
 {% if size == 'full' %}
-<div class="flex flex--col flex--center-x flex--center-y gap--medium h--full">
-  <div class="value value--xlarge md:value--xxlarge lg:value--xxxlarge text--center">⚙️</div>
-  <div class="title title--medium md:title--large text--center">Configuration Required</div>
-  <div class="description md:title md:title--small text--center">
-    This plugin needs to be configured. Check your settings and try again.
+<div class="flex flex--col flex--center gap--medium h--full text--center">
+  <span class="label label--large label--inverted">SETUP REQUIRED</span>
+  <span class="title title--large">Configuration Needed</span>
+  <span class="description" data-clamp="2">
+    {{ message | default: "Please configure this plugin with your API key and settings in the TRMNL dashboard." }}
+  </span>
+</div>
+{% elsif size == 'half_horizontal' %}
+<div class="flex flex--row flex--center gap--medium h--full">
+  <span class="label label--inverted">SETUP</span>
+  <div class="flex flex--col gap--xsmall">
+    <span class="title title--small">Configuration Required</span>
+    <span class="description" data-clamp="1">{{ message | default: "Configure plugin settings to begin." }}</span>
   </div>
 </div>
-{% elsif size == 'half' %}
-<div class="flex flex--col flex--center-x flex--center-y gap--small h--full">
-  <div class="value value--large md:value--xlarge">⚙️</div>
-  <div class="title title--small md:title--medium text--center">Config Required</div>
-  <div class="description text--center">Check your settings</div>
+{% elsif size == 'half_vertical' %}
+<div class="flex flex--col flex--center gap--small h--full text--center">
+  <span class="label label--inverted">SETUP</span>
+  <span class="title title--small">Configuration Required</span>
+  <span class="description" data-clamp="2">{{ message | default: "Check your plugin settings to begin." }}</span>
 </div>
-{% elsif size == 'quadrant' %}
-<div class="flex flex--col flex--center-x flex--center-y gap--xsmall h--full">
-  <div class="value value--medium">⚙️</div>
-  <div class="description text--center">Configure</div>
+{% else %}
+<div class="flex flex--col flex--center gap--xsmall h--full text--center">
+  <span class="label label--small label--inverted">SETUP</span>
+  <span class="description" data-clamp="1">{{ message | default: "Configure plugin" }}</span>
 </div>
 {% endif %}
 {% endtemplate %}
 
 {% comment %}
   ============================================================================
-  DATA DISPLAY COMPONENT
+  METRIC ITEM COMPONENT
   ============================================================================
-  Displays a value with optional label, supports tabular numbers
-  Parameters: value (required), label (optional), size (small, medium, large), use_tnums (true/false)
+  Standard TRMNL `.item` pattern with required `.meta` div and `.content`.
+  Parameters:
+  - value: (required) Metric value
+  - label: (required) Metric label
+  - index: (optional) Index number for `.meta`
+  - emphasize: (optional) Boolean to invert the item (`inverse` class in Framework 3.4)
 {% endcomment %}
-{% template data_display %}
-<div class="flex flex--col gap--xsmall">
-  {% if label %}
-  <span class="label">{{ label }}</span>
-  {% endif %}
-  <span class="value {% if size == 'small' %}value--small{% elsif size == 'large' %}value--large lg:value--xlarge{% else %}value--medium md:value--large{% endif %} {% if use_tnums %}value--tnums{% endif %}">
-    {{ value }}
-  </span>
-</div>
-{% endtemplate %}
-
-{% comment %}
-  ============================================================================
-  METRIC CARD COMPONENT
-  ============================================================================
-  Displays a metric in a card-like layout
-  Parameters: number (required), label (required), unit (optional)
-{% endcomment %}
-{% template metric_card %}
-<div class="flex flex--col gap--xsmall flex--center-x text--center">
-  <span class="value value--large md:value--xlarge lg:value--xxlarge">
-    {{ number }}
-    {% if unit %}<span class="label">{{ unit }}</span>{% endif %}
-  </span>
-  <span class="label">{{ label }}</span>
-</div>
-{% endtemplate %}
-
-{% comment %}
-  ============================================================================
-  STATUS BADGE COMPONENT
-  ============================================================================
-  Displays a status badge with icon
-  Parameters: status (required), message (required)
-{% endcomment %}
-{% template status_badge %}
-<div class="flex flex--row flex--center-y gap--small p--1 rounded bg--gray-50">
-  {% case status %}
-  {% when 'success' %}
-  <span class="value value--small">✓</span>
-  {% when 'warning' %}
-  <span class="value value--small">⚠️</span>
-  {% when 'error' %}
-  <span class="value value--small">✕</span>
-  {% when 'info' %}
-  <span class="value value--small">ℹ️</span>
-  {% endcase %}
-  <span class="description">{{ message }}</span>
-</div>
-{% endtemplate %}
-
-{% comment %}
-  ============================================================================
-  TITLE BAR TEMPLATE
-  ============================================================================
-  Standard title bar used in layouts
-  Parameters: title (required), icon (optional), instance (optional)
-{% endcomment %}
-{% template title_bar %}
-<div class="title_bar">
-  {% if icon %}
-  <img src="{{ icon }}" class="icon h--6" alt="{{ title }}">
-  {% endif %}
-  <span class="title md:title--large">{{ title }}</span>
-  {% if instance %}
-  <span class="instance">{{ instance }}</span>
-  {% endif %}
-</div>
-{% endtemplate %}
-
-{% comment %}
-  ============================================================================
-  RICH TEXT COMPONENT EXAMPLE
-  ============================================================================
-  Complex formatted content with alignment and size control
-  Parameters: alignment (left, center, right), size (small, default, large)
-{% endcomment %}
-{% template rich_text_example %}
-<div class="richtext richtext--{{ alignment | default: 'center' }} gap--large">
-  <div class="content content--{{ alignment | default: 'center' }} {% if size == 'small' %}content--small{% elsif size == 'large' %}content--large{% endif %} gap text--{{ alignment | default: 'center' }}">
-    <p>This is rich text content with multiple paragraphs.</p>
-    <p>Perfect for detailed information and explanations.</p>
+{% template metric_item %}
+<div class="item {% if emphasize %}inverse{% endif %}">
+  <div class="meta">
+    {% if index %}<span class="index">{{ index }}</span>{% endif %}
   </div>
-</div>
-{% endtemplate %}
-
-{% comment %}
-  ============================================================================
-  GRID ITEM COMPONENT
-  ============================================================================
-  Reusable grid item with metadata and content
-  Parameters: value (required), label (required), meta (optional)
-{% endcomment %}
-{% template grid_item %}
-<div class="item">
-  {% if meta %}<div class="meta">{{ meta }}</div>{% endif %}
   <div class="content">
-    <span class="value value--large value--tnums">{{ value }}</span>
+    <span class="value value--base md:value--large value--tnums" data-fit-value="true">{{ value | default: "—" }}</span>
     <span class="label">{{ label }}</span>
   </div>
 </div>
@@ -154,29 +119,59 @@
 
 {% comment %}
   ============================================================================
-  PROGRESS BAR COMPONENT
+  STATUS BADGE COMPONENT (Framework 3.4 Semantic Labels)
   ============================================================================
-  Visual progress indicator with percentage
-  Parameters: percentage (required), label (optional), size (small, default, large)
+  Uses Framework 3.4 semantic label classes (`label--success`, `label--warning`,
+  `label--error`, `label--primary`) which render in color on color ePaper panels
+  and automatically fall back to perceptual grayscale on 1-bit/2-bit/4-bit displays.
+  Parameters:
+  - status: "success" | "warning" | "error" | "info"
+  - message: Text to display
 {% endcomment %}
-{% template progress_bar %}
-<div class="progress-bar {% if size == 'small' %}progress-bar--small{% elsif size == 'large' %}progress-bar--large{% endif %}">
-  <div class="content">
-    {% if label %}<span class="label">{{ label }}</span>{% endif %}
-    <span class="value value--xxsmall">{{ percentage }}%</span>
-  </div>
-  <div class="track">
-    <div class="fill" style="width: {{ percentage }}%"></div>
-  </div>
-</div>
+{% template status_badge %}
+{% case status %}
+{% when 'success' %}
+  <span class="label label--success">{{ message | default: "Active" }}</span>
+{% when 'warning' %}
+  <span class="label label--warning">{{ message | default: "Warning" }}</span>
+{% when 'error' %}
+  <span class="label label--error">{{ message | default: "Error" }}</span>
+{% else %}
+  <span class="label label--primary">{{ message | default: "Info" }}</span>
+{% endcase %}
 {% endtemplate %}
 
 {% comment %}
   ============================================================================
-  PLACEHOLDER CONTENT
+  PROGRESS BAR COMPONENT (Framework 3.4 Runtime Engine)
   ============================================================================
-  Use these for testing and demo purposes
+  Uses `data-progress` attribute instead of inline styles.
+  Parameters:
+  - percentage: 0-100
+  - size: "small" | "base" | "large"
 {% endcomment %}
+{% template progress_bar %}
+<div class="progress-bar {% if size == 'small' %}progress-bar--small{% elsif size == 'large' %}progress-bar--large{% endif %}" data-progress="{{ percentage | default: 0 }}"></div>
+{% endtemplate %}
 
-{% comment %} Placeholder icon (1x1 transparent PNG) {% endcomment %}
-{% assign placeholder_icon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" %}
+{% comment %}
+  ============================================================================
+  TITLE BAR COMPONENT
+  ============================================================================
+  Standard title bar placed as a sibling to `<div class="layout">`.
+  In Mashups (half_horizontal, half_vertical, quadrant), TRMNL Framework 3.4
+  automatically styles `.title_bar` compactly.
+  Parameters:
+  - icon: Data URI or HTTPS URL for the 24x24 icon
+  - title: Plugin title
+  - instance: Optional instance/timestamp label
+{% endcomment %}
+{% template title_bar %}
+<div class="title_bar">
+  <img class="image image--adaptive" src="{{ icon | default: 'https://trmnl.com/images/plugins/trmnl--render.svg' }}" alt="{{ title | default: 'Plugin' }}">
+  <span class="title">{{ title | default: "Example Plugin" }}</span>
+  {% if instance and instance != "" %}
+  <span class="instance">{{ instance }}</span>
+  {% endif %}
+</div>
+{% endtemplate %}

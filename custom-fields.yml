@@ -1,110 +1,130 @@
-# Custom Form Fields Configuration
-# 
-# This file defines the user-facing form fields that appear in the TRMNL
-# plugin configuration interface. Users enter values here which become
-# available in your templates via:
-#   {{ trmnl.plugin_settings.custom_fields_values.field_name }}
+# ============================================================================
+# Custom Form Fields Reference (custom-fields.yml)
+# ============================================================================
+# Docs: https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder
+# Visual Builder: https://trmnl.com/form-builder
+#
+# HOW THIS FILE IS USED:
+# - In the TRMNL Web UI: Paste this YAML into the "Form Fields" box in your
+#   Private Plugin settings.
+# - In ZIP Exports / GitHub Sync / `trmnlp`: Nest this list under the
+#   `custom_fields:` key inside `settings.yml`.
+#
+# ACCESSING VALUES:
+# - In Liquid Markup:
+#     {{ trmnl.plugin_settings.custom_fields_values.api_key }}
+# - In Polling URL, Polling Headers, or Polling Body:
+#     https://api.example.com/v1/data?api_key={{ api_key | url_encode }}
+#     authorization: Bearer {{ api_key }}
+#
+# REQUIRED KEYS FOR EVERY FIELD:
+# - keyname:    Parameterized identifier (snake_case), e.g., `api_key`
+# - field_type: One of the supported TRMNL field types below
+# - name:       User-facing field label
+#
+# OPTIONAL KEYS:
+# - description:        Secondary label (HTML-friendly)
+# - description-LOCALE: Localized description (e.g., `description-de`, `description-es-ES`)
+# - help_text:          Tertiary label (HTML-friendly)
+# - optional:           Boolean. Fields are REQUIRED by default unless `optional: true` is set!
+# - default:            Default value if blank (for `select`, must be lowercase parameterized value)
+# - placeholder:        Example value when input is empty (supported on url, string, text, number, code)
+# - group:              Combines multiple fields into a collapsible accordion section
+# - conditional_validation: Dynamically show/hide or require other fields based on this field's value
+#
+# SUPPORTED FIELD TYPES (`field_type`):
+# - author_bio:             Plugin README block (required by Chef linter for publishing Recipes)
+# - string:                 Single-line text input (supports `maxlength`, `placeholder`)
+# - password:               Masked single-line input for API keys/secrets
+# - text:                   Multi-line textarea (supports `rows`, `maxlength`, `placeholder`)
+# - code:                   Monospace multi-line textarea (supports `rows`, `placeholder`)
+# - number:                 Numeric input (supports `min`, `max`, `step`, `placeholder`)
+# - boolean:                Checkbox toggle (`default: true` or `default: false`)
+# - select:                 Dropdown menu (`options` array, `multiple: true` for multi-select; values stored lowercase!)
+# - url:                    URL input with validation
+# - date:                   Date picker (YYYY-MM-DD; `default: "today"` supported)
+# - time:                   Time picker (HH:SS)
+# - time_zone:              Time zone selector
+# - multi_string:           Multiple comma-separated values
+# - lat_lon:                Latitude/Longitude coordinate input
+# - copyable:               Read-only text with click-to-copy button (requires `value`)
+# - copyable_webhook_url:   Click-to-copy button auto-populated with the plugin's Webhook URL
+# - plugin_instance_select: Dropdown of user's active plugin instances (for `plugin_merge` strategy)
+# - xhrSelect:              Dynamic dropdown populated from `endpoint:` (client-side) or `remote:` (server-side)
+# - xhrSelectSearch:        Searchable dynamic dropdown populated from `endpoint:`
+# ============================================================================
 
-# Field Types:
-# - text: Single line text input
-# - long_text: Multi-line text area
-# - select: Dropdown with predefined options
-# - checkbox: Boolean toggle
-# - number: Numeric input
-# - url: URL input with validation
-# - email: Email input with validation
+# 1. Author Bio (Required by Chef linter when publishing as a Recipe)
+- keyname: about
+  name: About This Plugin
+  field_type: author_bio
+  category: productivity,utilities
+  description: >-
+    A template plugin for TRMNL ePaper devices built with TRMNL Framework 3.4.
+  github_url: https://github.com/hossain-khan/trmnl-plugin-template
+  learn_more_url: https://help.trmnl.com/en/articles/9510536-private-plugins
+  email_address: support@example.com
 
-# Example text field
-- key: "api_key"
-  type: "text"
-  label: "API Key"
-  placeholder: "Enter your API key"
-  required: true
-  description: "Required for authenticating with the data service"
+# 2. Password / Secret Field (Recommended for API keys)
+- keyname: api_key
+  field_type: password
+  name: API Key
+  description: Required for authenticating with the data service
+  placeholder: sk_live_...
+  optional: true
 
-# Example select field
-- key: "data_source"
-  type: "select"
-  label: "Data Source"
-  required: true
+# 3. Select Field with Conditional Validation
+# Note: Option values are stored in lowercase (e.g. "Source A" -> "source_a", or use "Label: value")
+- keyname: data_source
+  field_type: select
+  name: Data Source
+  description: Select which data source to display
   options:
-    - label: "Source A"
-      value: "source_a"
-    - label: "Source B"
-      value: "source_b"
-    - label: "Source C"
-      value: "source_c"
-  description: "Select which data source to display"
+    - "Source A: source_a"
+    - "Source B: source_b"
+    - "Custom URL: custom"
+  default: source_a
+  conditional_validation:
+    - when: custom
+      visible:
+        - custom_endpoint_url
+      required:
+        - custom_endpoint_url
 
-# Example URL field
-- key: "webhook_url"
-  type: "url"
-  label: "Webhook URL"
-  placeholder: "https://example.com/webhook"
-  required: false
-  description: "Optional: Receive updates via webhook (if using webhook strategy)"
+# 4. Conditionally Visible URL Field (hidden unless `data_source` == `custom`)
+- keyname: custom_endpoint_url
+  field_type: url
+  name: Custom Endpoint URL
+  placeholder: https://api.example.com/data
+  description: Custom JSON endpoint to poll when Data Source is set to Custom URL
+  optional: true
 
-# Example checkbox field
-- key: "show_details"
-  type: "checkbox"
-  label: "Show Additional Details"
-  required: false
-  description: "Display extra information in the layout"
+# 5. Boolean Toggle Field
+- keyname: show_details
+  field_type: boolean
+  name: Show Additional Details
+  description: Display secondary metrics and footer details in the layout
+  default: true
+  optional: true
 
-# Example number field
-- key: "refresh_interval"
-  type: "number"
-  label: "Refresh Interval (minutes)"
-  placeholder: "15"
-  required: false
-  description: "How often to refresh data (1-1440)"
+# 6. Number Field with Bounds
+- keyname: max_items
+  field_type: number
+  name: Maximum Items
+  placeholder: 5
+  min: 1
+  max: 20
+  step: 1
+  default: 5
+  group: Display Preferences
+  optional: true
 
-# Example custom title
-- key: "custom_title"
-  type: "text"
-  label: "Custom Plugin Title"
-  placeholder: "Enter a custom title (optional)"
-  required: false
-  description: "Leave blank to use plugin's default title"
-
-# Developer Notes:
-#
-# 1. ACCESSING FIELD VALUES IN TEMPLATES
-#    {{ trmnl.plugin_settings.custom_fields_values.api_key }}
-#    {{ trmnl.plugin_settings.custom_fields_values.data_source }}
-#    {{ trmnl.plugin_settings.custom_fields_values.show_details }}
-#
-# 2. CONDITIONAL DISPLAY
-#    {% if trmnl.plugin_settings.custom_fields_values.show_details == "true" %}
-#      <!-- Show detailed content -->
-#    {% endif %}
-#
-# 3. FIELD REQUIREMENTS
-#    - required: true = User must fill in this field
-#    - required: false = Optional field
-#    - All required fields must be set before plugin activates
-#
-# 4. FIELD ORDERING
-#    - Fields appear in the order defined in this file
-#    - Group related fields together
-#    - Put most important fields first
-#
-# 5. VALIDATION
-#    - type: url = Validates URL format
-#    - type: email = Validates email format
-#    - type: number = Only numeric input allowed
-#    - Custom validation in your backend if needed
-#
-# 6. SECURITY
-#    - Never log or expose API keys/secrets
-#    - Treat credentials as sensitive
-#    - Use HTTPS for webhook URLs
-#    - Consider using environment variables for secrets
-#
-# 7. CONDITIONAL VISIBILITY (Advanced)
-#    Some TRMNL versions support conditional field visibility.
-#    If supported, you can add "visible_if" to show/hide fields:
-#    - visible_if:
-#        field: "data_source"
-#        value: "source_a"
-#      (Shows this field only when data_source == "source_a")
+# 7. Single-Line String Field
+- keyname: custom_title
+  field_type: string
+  name: Custom Plugin Title
+  placeholder: Enter a custom title (optional)
+  maxlength: 40
+  description: Leave blank to use the plugin's default instance name
+  group: Display Preferences
+  optional: true

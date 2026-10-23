@@ -1,204 +1,62 @@
-# TRMNL Plugin Template - Setup Complete ✅
+# TRMNL Plugin Template - Setup Complete
 
-This template is now fully configured and ready to be cloned for new TRMNL plugin projects.
+This template is configured for **[TRMNL Framework 3.4](https://trmnl.com/framework/docs/3.4)** and the latest [TRMNL Private Plugins](https://help.trmnl.com/en/articles/9510536-private-plugins) specifications.
 
 ## What's Included
 
-### 📁 Project Structure
+### Project Structure
 ```
 trmnl-plugin-template/
 ├── .github/
-│   ├── copilot-instructions.md    ← AI context & best practices
+│   ├── copilot-instructions.md    ← AI context (Framework 3.4, Advanced Liquid, Form Builder)
 │   └── TEMPLATE_USAGE.md          ← How to customize this template
 ├── .editorconfig                  ← Consistent coding styles
 ├── .gitignore                     ← Git ignore patterns
 ├── assets/
-│   ├── icon/                      ← Plugin icons
 │   └── demo/
-│       └── sample-data.json       ← Test data
+│       └── sample-data.json       ← Test merge variables
 ├── templates/
-│   ├── shared.liquid              ← Reusable components
-│   ├── full.liquid                ← Full-screen layout
-│   ├── half_horizontal.liquid     ← Side-by-side layout
-│   ├── half_vertical.liquid       ← Stacked layout
-│   └── quadrant.liquid            ← Compact layout
-├── custom-fields.yml              ← User form fields
-├── settings.yml                   ← Plugin configuration
+│   ├── shared.liquid              ← Shared variables, inline SVG icon, reusable partials
+│   ├── full.liquid                ← Full-screen layout (800×480 / 1040×780)
+│   ├── half_horizontal.liquid     ← Top/bottom banner layout (800×240)
+│   ├── half_vertical.liquid       ← Left/right column layout (400×480)
+│   └── quadrant.liquid            ← Quarter-size postcard layout (400×240)
+├── custom-fields.yml              ← TRMNL Form Builder YAML reference & examples
+├── settings.yml                   ← Official TRMNL plugin settings & custom_fields
 ├── package.json                   ← Project metadata
 ├── CONTRIBUTING.md                ← Contribution guide
-├── GETTING_STARTED.md             ← Quick start guide
+├── GETTING_STARTED.md             ← Step-by-step developer guide
 ├── README.md                      ← Complete documentation
 └── LICENSE                        ← MIT License
 ```
 
-## Key Features Ready to Go
+## Key Features
 
-✅ **5 Template Files** - Full, Half Horizontal, Half Vertical, Quadrant + Shared  
-✅ **Reusable Components** - Error states, metrics, status badges, data displays  
-✅ **Configuration Files** - settings.yml and custom-fields.yml with examples  
-✅ **Comprehensive Docs** - README, Getting Started, Contributing, Copilot Instructions  
-✅ **Editor Config** - Consistent coding styles across editors  
-✅ **Sample Data** - Test data for quick validation  
-✅ **Best Practices** - Built-in error handling, responsive design, accessibility  
+- **TRMNL Framework 3.4 Compliant**:
+  - Zero inline `style="..."` attributes and zero emojis (ePaper safe)
+  - 14-step grayscale (`gray-10`–`gray-75`), chromatic palette, and semantic badges (`label--primary`, `label--success`, `label--warning`, `label--error`)
+  - Adaptive monochrome SVG icon (`image--adaptive`) in `.title_bar` that follows dark mode and v3 themes
+  - Proper `.item` structure with required `.meta` and `.content` elements
+- **Official `settings.yml` & `custom_fields` Schema**:
+  - Supports all 6 TRMNL strategies (`polling`, `webhook`, `plugin_merge`, `static`, `async_polling`, `none`)
+  - Valid Form Builder YAML (`keyname`, `field_type`, `name`, `optional`, `conditional_validation`, `author_bio`)
+- **Advanced Liquid Patterns**:
+  - Timezone conversion via `trmnl.user.utc_offset` and `trmnl.user.time_zone_iana`
+  - Localization via `l_word` and `l_date` (`trmnl.user.locale`)
+  - Custom filters (`random_number`, `append_random`, `json`, `parse_json`, `qr_code`)
 
-## How to Use This Template
+## Framework & Documentation Links
 
-### For Creating a New Plugin
-
-1. **Clone the template**:
-   ```bash
-   git clone https://github.com/your-username/trmnl-plugin-template.git your-new-plugin
-   cd your-new-plugin
-   ```
-
-2. **Customize** (5-minute setup):
-   - Edit `settings.yml` with your API endpoint
-   - Edit `custom-fields.yml` with your form fields
-   - Update template files with your design
-   - Update `.github/copilot-instructions.md` with project details
-
-3. **Test in TRMNL Markup Editor**:
-   - Copy templates to [editor.trmnl.com](https://editor.trmnl.com)
-   - Test with sample data
-
-4. **Deploy**:
-   - Deploy your backend API
-   - Upload to TRMNL Dashboard
-   - Done! 🎉
-
-### For Continuous Use
-
-Developers can clone this template as a starting point for any new TRMNL plugin without additional setup.
-
-## Template Quality Checklist
-
-The template includes:
-
-### Templates
-- ✅ All 4 layout types (full, half_horizontal, half_vertical, quadrant)
-- ✅ Shared components and utilities
-- ✅ Error state fallbacks
-- ✅ Responsive design patterns
-- ✅ Framework utility usage
-- ✅ Comments and documentation
-
-### Configuration
-- ✅ settings.yml with polling strategy
-- ✅ custom-fields.yml with example fields
-- ✅ .editorconfig for consistent styles
-- ✅ package.json for project metadata
-- ✅ .gitignore with common patterns
-
-### Documentation
-- ✅ README.md (comprehensive guide)
-- ✅ GETTING_STARTED.md (quick start)
-- ✅ CONTRIBUTING.md (contribution guidelines)
-- ✅ .github/copilot-instructions.md (AI context)
-- ✅ TEMPLATE_USAGE.md (template customization)
-- ✅ Inline comments in all templates
-
-### Assets
-- ✅ Icon directory for plugin icons
-- ✅ Demo directory with sample data
-- ✅ Sample JSON for testing
-
-## Quick Feature Reference
-
-### Responsive Breakpoints
-- `sm:` - 600px+ (Kindle devices)
-- `md:` - 800px+ (TRMNL OG, OG V2)
-- `lg:` - 1024px+ (TRMNL X)
-- `portrait:` - Portrait orientation
-
-### Typography Classes
-- `title` - Headings
-- `value` - Numbers/metrics
-- `label` - Small labels
-- `description` - Body text
-
-### Layout Utilities
-- `flex flex--row flex--col`
-- `flex--center-x flex--center-y flex--between`
-- `grid grid--cols-2 grid--cols-3`
-- `gap--xsmall gap--small gap--medium gap--large`
-- `h--full w--full p--1 p--2`
-
-### Reusable Components
-- `error_state` - Error message display
-- `data_display` - Value + label
-- `metric_card` - Metric display
-- `status_badge` - Status indicator
-- `title_bar` - Standard title bar
-
-## Next Steps for New Plugin Projects
-
-When cloning this template for a new plugin:
-
-1. ✏️ Rename the repository to your plugin name
-2. ✏️ Update `settings.yml` with your endpoint
-3. ✏️ Update `custom-fields.yml` with your fields
-4. ✏️ Edit all 5 template files
-5. ✏️ Update `.github/copilot-instructions.md`
-6. ✏️ Create your backend API
-7. 🧪 Test in TRMNL Markup Editor
-8. 🚀 Deploy to TRMNL Dashboard
-
-## File-by-File Guide
-
-### Templates (templates/*.liquid)
-- **shared.liquid**: Reusable components - edit/add as needed
-- **full.liquid**: Main display - customize with your content
-- **half_horizontal.liquid**: Side-by-side layout - optional
-- **half_vertical.liquid**: Stacked layout - optional
-- **quadrant.liquid**: Compact layout - optional
-
-### Configuration Files
-- **settings.yml**: How your plugin fetches data and refreshes
-- **custom-fields.yml**: User input fields for configuration
-
-### Documentation
-- **README.md**: Main documentation for users
-- **GETTING_STARTED.md**: Step-by-step setup guide
-- **CONTRIBUTING.md**: Contribution guidelines
-- **.github/copilot-instructions.md**: AI context (customize!)
-- **.github/TEMPLATE_USAGE.md**: How to customize this template
-
-### Other Files
-- **.editorconfig**: Consistent editor settings
-- **package.json**: Project metadata
-- **.gitignore**: Git ignore patterns
-- **LICENSE**: MIT License (customizable)
-
-## Framework Resources
-
-- [TRMNL Framework Docs](https://trmnl.com/framework) - Complete reference
-- [Device Models API](https://trmnl.com/api/models) - Device specifications
-- [Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides) - How-tos
-- [Liquid Docs](https://shopify.github.io/liquid/) - Template language
-
-## Support & Customization
-
-### Customizing the Template
-
-Follow [.github/TEMPLATE_USAGE.md](.github/TEMPLATE_USAGE.md) to customize for your project.
-
-### Getting Help
-
-1. Check [GETTING_STARTED.md](GETTING_STARTED.md) for step-by-step guidance
-2. Review [README.md](README.md) for comprehensive documentation
-3. Check [.github/copilot-instructions.md](.github/copilot-instructions.md) for patterns
-4. Consult [TRMNL Framework Docs](https://trmnl.com/framework)
+- [TRMNL Framework 3.4 Docs](https://trmnl.com/framework/docs/3.4)
+- [Private Plugins Guide](https://help.trmnl.com/en/articles/9510536-private-plugins)
+- [Plugin Strategies](https://help.trmnl.com/en/articles/17434705-plugin-strategies)
+- [Custom Plugin Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder)
+- [Advanced Liquid Guide](https://help.trmnl.com/en/articles/10693981-advanced-liquid)
+- [Custom Plugin Filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters)
+- [Importing & Exporting Private Plugins](https://help.trmnl.com/en/articles/10542599-importing-and-exporting-private-plugins)
+- [`trmnlp` Local Preview & Linter](https://github.com/usetrmnl/trmnlp)
 
 ## Version History
 
-- **v1.0.0** (January 2026) - Initial complete template
-
-## License
-
-This template is provided under the MIT License.
-
----
-
-**This template is ready to use immediately! 🚀**
-
-Clone it, customize it, and start building amazing TRMNL plugins!
+- **v1.1.0** (October 2026) — Migrated to TRMNL Framework 3.4, updated `settings.yml` & `custom-fields.yml` to official TRMNL Form Builder and Private Plugins specifications, added Advanced Liquid patterns
+- **v1.0.0** (January 2026) — Initial template release
