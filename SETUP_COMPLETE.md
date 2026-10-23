@@ -13,10 +13,8 @@ trmnl-plugin-template/
 ├── .github/
 │   ├── instructions/
 │   │   └── trmnl.instructions.md     ← GitHub Copilot TRMNL skill instructions
-│   ├── workflows/
-│   │   └── trmnl.yml                 ← GitHub Actions CI (`trmnlp lint` + `trmnlp test`)
-│   ├── copilot-instructions.md       ← AI context (Framework 3.4, Advanced Liquid, Form Builder)
-│   └── TEMPLATE_USAGE.md             ← How to customize this template
+│   └── workflows/
+│       └── trmnl.yml                 ← GitHub Actions CI (`trmnlp lint` + `trmnlp test`)
 ├── .editorconfig                     ← Consistent coding styles
 ├── .gitignore                        ← Git ignore patterns (ignores _build/ and report/)
 ├── .trmnlp.yml                       ← Local preview configuration & mock variables

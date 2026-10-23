@@ -178,4 +178,4 @@ const data = {{ payload | json }};
 - [Private Plugins Guide](https://help.trmnl.com/en/articles/9510536-private-plugins)
 - [Custom Plugin Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder)
 - [Advanced Liquid Guide](https://help.trmnl.com/en/articles/10693981-advanced-liquid)
-- [`AGENTS.md`](AGENTS.md) & [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
+- [`AGENTS.md`](AGENTS.md) & [`.claude/skills/trmnl/SKILL.md`](.claude/skills/trmnl/SKILL.md)
