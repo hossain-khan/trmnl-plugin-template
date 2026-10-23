@@ -42,4 +42,4 @@ All changes must pass:
 
 - Review [`GETTING_STARTED.md`](GETTING_STARTED.md) and [`AGENTS.md`](AGENTS.md)
 - Check [`README.md`](README.md)
-- Look at [`.github/copilot-instructions.md`](.github/copilot-instructions.md) and [`.claude/skills/trmnl/SKILL.md`](.claude/skills/trmnl/SKILL.md)
+- Look at [`AGENTS.md`](AGENTS.md) and [`.claude/skills/trmnl/SKILL.md`](.claude/skills/trmnl/SKILL.md)

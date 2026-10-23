@@ -48,10 +48,8 @@ your-plugin-name/
 ├── .github/
 │   ├── instructions/
 │   │   └── trmnl.instructions.md         # GitHub Copilot TRMNL skill instructions
-│   ├── workflows/
-│   │   └── trmnl.yml                     # CI workflow running `trmnlp lint` and `trmnlp test`
-│   ├── copilot-instructions.md           # Project-specific AI assistant instructions
-│   └── TEMPLATE_USAGE.md                 # Instructions for customizing the template
+│   └── workflows/
+│       └── trmnl.yml                     # CI workflow running `trmnlp lint` and `trmnlp test`
 ├── assets/
 │   └── demo/                             # Demo preview screenshots & sample-data.json
 ├── bin/
@@ -83,7 +81,7 @@ This template comes pre-configured with **[`usetrmnl/trmnl-agent-skills`](https:
 | AI Harness | Included Configuration |
 |---|---|
 | **Claude Code / OpenCode** | [`.claude/settings.json`](.claude/settings.json) + [`.claude/skills/trmnl/SKILL.md`](.claude/skills/trmnl/SKILL.md) |
-| **GitHub Copilot** | [`.github/instructions/trmnl.instructions.md`](.github/instructions/trmnl.instructions.md) + [`.github/copilot-instructions.md`](.github/copilot-instructions.md) |
+| **GitHub Copilot** | [`AGENTS.md`](AGENTS.md) + [`.github/instructions/trmnl.instructions.md`](.github/instructions/trmnl.instructions.md) |
 | **OpenAI Codex / Gemini / Cursor / Antigravity** | [`AGENTS.md`](AGENTS.md) + bundled references in [`.claude/skills/trmnl/references/`](.claude/skills/trmnl/references/) |
 
 AI agents can autonomously write markup, validate it, render real headless browser screenshots, and check for overflow or clipped text without needing physical hardware:
