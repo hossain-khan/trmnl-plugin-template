@@ -1,28 +1,25 @@
-# Generic Copilot Instructions Template - Usage Guide
+# AI Agent & Copilot Instructions Template - Usage Guide
 
-This repository contains a **generic [`.github/copilot-instructions.md`](copilot-instructions.md) template** that can be used as a starting point for any TRMNL plugin project.
+This repository includes comprehensive instructions and bundled skills from **[`usetrmnl/trmnl-agent-skills`](https://github.com/usetrmnl/trmnl-agent-skills)** and **[`usetrmnl/trmnlp`](https://github.com/usetrmnl/trmnlp)** for AI coding assistants (Claude Code, GitHub Copilot, OpenAI Codex, Gemini CLI, Cursor, OpenCode, Antigravity).
 
-## What is this template?
+## What is included?
 
-The [`.github/copilot-instructions.md`](copilot-instructions.md) file is a comprehensive guide for AI assistants (GitHub Copilot, Claude Code, Cursor, Gemini, etc.) working on TRMNL plugin projects. It provides:
+1. **Bundled Production TRMNL Skill ([`.claude/skills/trmnl/`](../.claude/skills/trmnl/SKILL.md))**:
+   - [`agent_prompt.md`](../.claude/skills/trmnl/references/agent_prompt.md) — Core rules, data-first hard gate, view dimensions, layout system, image dithering, no-custom-styles, no-emojis
+   - [`template_guide.md`](../.claude/skills/trmnl/references/template_guide.md) — Verbatim TRMNL Design System reference (~2,880 lines)
+   - [`framework_v3_guide.md`](../.claude/skills/trmnl/references/framework_v3_guide.md) — Framework v3 color palette, `inverse`, `image--adaptive`, `TRMNLPaint`, `TRMNLCharts`, `TRMNLMaps`
+2. **Multi-Harness Agent Entry Points**:
+   - **Claude Code / OpenCode**: [`.claude/settings.json`](../.claude/settings.json) + [`.claude/skills/trmnl/SKILL.md`](../.claude/skills/trmnl/SKILL.md)
+   - **GitHub Copilot**: [`.github/instructions/trmnl.instructions.md`](instructions/trmnl.instructions.md) + [`.github/copilot-instructions.md`](copilot-instructions.md)
+   - **Codex / Gemini / Cursor / Generic Agents**: [`AGENTS.md`](../AGENTS.md)
+3. **Autonomous Local Verification (`./bin/trmnlp`)**:
+   - `./bin/trmnlp lint --format json` — Static validation
+   - `./bin/trmnlp test --report report` — Headless browser RSpec verification across all views & devices
+   - `./bin/trmnlp build --png` — Static HTML and PNG snapshot generation
 
-- Complete **[TRMNL Framework 3.4](https://trmnl.com/framework/docs/3.4)** documentation (14-step grayscale, chromatic & semantic colors, themes, `image--adaptive`, `inverse`, `TRMNLPaint`, `TRMNLCharts`, `TRMNLMaps`, position utilities, shade-step borders)
-- Hard ePaper rules (no inline `style="..."` or `<style>` blocks, no emojis, no `<div class="view">` wrapper, mandatory `image-dither` on photos)
-- View dimensions and spatial adaptation strategies (`full` 800×480, `half_horizontal` 800×240, `half_vertical` 400×480, `quadrant` 400×240)
-- Official [Private Plugins](https://help.trmnl.com/en/articles/9510536-private-plugins) strategies (`polling`, `webhook`, `plugin_merge`, `static`, `async_polling`, `none`), Transforms (`transform.js` / Serverless), and [Custom Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder) YAML schema
-- [Advanced Liquid](https://help.trmnl.com/en/articles/10693981-advanced-liquid) & [Custom Plugin Filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters) patterns
+## How to customize for your plugin
 
-## How to use this template
-
-### Step 1: Copy or clone the template
-
-Copy [`.github/copilot-instructions.md`](copilot-instructions.md) to your new TRMNL plugin project:
-
-```bash
-cp .github/copilot-instructions.md /path/to/your/plugin/.github/copilot-instructions.md
-```
-
-### Step 2: Customize the header
+### Step 1: Customize the header in [`.github/copilot-instructions.md`](copilot-instructions.md)
 
 Replace the placeholder information at the top of the file:
 
@@ -33,29 +30,21 @@ Replace the placeholder information at the top of the file:
 > **Last Updated**: [Current Date]
 ```
 
-### Step 3: Add project overview & data structure
+### Step 2: Add project overview & data structure
 
-1. Fill in the **Project Overview** section with your plugin's purpose and goals.
-2. Document your actual merge variables (JSON payload from your polling endpoint, webhook, or transform script).
-3. Document any custom form fields (`keyname`, `field_type`, `name`) configured in `settings.yml`.
+1. Fill in the **Project Overview** section in [`.github/copilot-instructions.md`](copilot-instructions.md) with your plugin's purpose and goals.
+2. Document your actual merge variables (JSON payload from your polling endpoint, webhook, or transform script) and update [`.trmnlp.yml`](../.trmnlp.yml) and [`assets/demo/sample-data.json`](../assets/demo/sample-data.json).
+3. Document any custom form fields (`keyname`, `field_type`, `name`) configured in [`src/settings.yml`](../src/settings.yml) and update [`tests/plugin_spec.rb`](../tests/plugin_spec.rb).
 
-## What should you keep?
+## Updating `trmnl-agent-skills`
 
-**Always keep these core sections:**
+To pull the latest upstream reference files from [`usetrmnl/trmnl-agent-skills`](https://github.com/usetrmnl/trmnl-agent-skills):
 
-1. **Hard Rules for TRMNL ePaper Markup** — Prevents inline CSS, emojis, and `<div class="view">` wrapper bugs
-2. **TRMNL Framework 3.4** — Device specs, view dimensions, color & grayscale tokens, and core utilities
-3. **Advanced Liquid & Custom TRMNL Filters** — Timezone conversion (`utc_offset`), localization (`l_word`, `l_date`), and JS integration
-4. **Private Plugins & Data Strategies** — Polling, Webhook, Plugin Merge, Transforms, and Form Builder rules
-5. **Testing & Verification Checklist** — Pre-flight checks before publishing
-
-## Getting Help
-
-- [TRMNL Framework 3.4 Docs](https://trmnl.com/framework/docs/3.4)
-- [Private Plugins Guide](https://help.trmnl.com/en/articles/9510536-private-plugins)
-- [Advanced Liquid Guide](https://help.trmnl.com/en/articles/10693981-advanced-liquid)
-- [Custom Plugin Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder)
-- [TRMNL Agent Skills](https://github.com/usetrmnl/trmnl-agent-skills)
+```bash
+git clone --depth 1 https://github.com/usetrmnl/trmnl-agent-skills /tmp/trmnl-agent-skills
+cp -r /tmp/trmnl-agent-skills/skills/trmnl/* .claude/skills/trmnl/
+rm -rf /tmp/trmnl-agent-skills
+```
 
 ## License
 

@@ -138,3 +138,8 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .DS_Store
+
+# trmnlp build & test report outputs
+_build/
+report/
+

@@ -1,14 +1,19 @@
 # Getting Started with This Template
 
-This guide walks you through setting up your TRMNL Private Plugin or Recipe using this template and **[TRMNL Framework 3.4](https://trmnl.com/framework/docs/3.4)**.
+This guide walks you through setting up, previewing, and testing your TRMNL Private Plugin or Recipe using **[TRMNL Framework 3.4](https://trmnl.com/framework/docs/3.4)**, **[`trmnlp`](https://github.com/usetrmnl/trmnlp)**, and **[`trmnl-agent-skills`](https://github.com/usetrmnl/trmnl-agent-skills)**.
 
 ## Step 1: Clone the Repository
 
-Clone this repository as a starting point for your plugin.
+Clone this repository as a starting point for your plugin:
+
+```bash
+git clone https://github.com/your-username/your-plugin-name.git
+cd your-plugin-name
+```
 
 ## Step 2: Customize Configuration Files
 
-### Update [`settings.yml`](settings.yml)
+### Update [`src/settings.yml`](src/settings.yml)
 
 1. Choose your plugin's **strategy** ([Plugin Strategies Guide](https://help.trmnl.com/en/articles/17434705-plugin-strategies)):
    - `polling` — TRMNL fetches 1 or more newline-separated URLs (`polling_url`, `polling_verb`, `polling_headers`, `polling_body`)
@@ -32,7 +37,7 @@ Clone this repository as a starting point for your plugin.
    dark_mode: 'no'
    ```
 
-3. Configure your **Custom Form Fields** under `custom_fields:` in [`settings.yml`](settings.yml) (or see [`custom-fields.yml`](custom-fields.yml) for more examples):
+3. Configure your **Custom Form Fields** under `custom_fields:` in [`src/settings.yml`](src/settings.yml) (or see [`custom-fields.yml`](custom-fields.yml) for more examples):
    ```yaml
    custom_fields:
      - keyname: about
@@ -57,12 +62,17 @@ Clone this repository as a starting point for your plugin.
        default: metric
        optional: true
    ```
-   > **Important Form Builder Rules**:
+   > **Important Form Builder & Linter Rules**:
    > - Required keys for every field: `keyname`, `field_type`, `name`
+   > - Every custom field defined in `src/settings.yml` must be referenced in `polling_url`, `polling_headers`, `polling_body`, `src/*.liquid`, or `src/transform.*` (checked by `trmnlp lint`)
    > - All fields are **required by default** unless `optional: true` is added
    > - `select` option values are always stored **lowercase** (`{{ trmnl.plugin_settings.custom_fields_values.units }}` → `"metric"`)
 
-## Step 3: Edit Template Files ([`templates/`](templates/))
+### Update [`.trmnlp.yml`](.trmnlp.yml)
+
+Configure local mock values for `custom_fields` and sample merge `variables` so `./bin/trmnlp serve` and `./bin/trmnlp build` can render offline or override live polling data.
+
+## Step 3: Edit Template Files ([`src/`](src/))
 
 ### Hard Rules for ePaper Templates
 - **Never wrap markup in `<div class="view">`**: The TRMNL platform provides `<div class="screen"><div class="view view--*">` automatically. Start your template with `<div class="layout ...">`.
@@ -70,7 +80,7 @@ Clone this repository as a starting point for your plugin.
 - **No inline `style="..."` or `<style>` blocks**: Use Framework 3.4 utility classes (`stretch`, `grid`, `col--span-*`, `flex`, `gap--*`).
 - **No emojis**: ePaper fonts do not include emojis (they render as empty boxes `□`). Use text labels, semantic badges (`label--success`, `label--warning`, `label--error`), or inline SVGs with `image--adaptive`.
 
-### 1. [`templates/shared.liquid`](templates/shared.liquid)
+### 1. [`src/shared.liquid`](src/shared.liquid)
 Runs before any view template. Define shared variables, inline 24×24 SVG icons, and reusable `{% template %}` blocks:
 
 ```liquid
@@ -91,25 +101,31 @@ Render partials in any view template by the template block's name:
 ```
 
 ### 2. Adapt Across All 4 View Sizes
-- **[`templates/full.liquid`](templates/full.liquid) (`800×480`, ~320px content height)**: Full canvas — use 12-col `grid` with `col--span-*` or `grid--cols-3`.
-- **[`templates/half_horizontal.liquid`](templates/half_horizontal.liquid) (`800×240`, ~144px content height)**: Wide banner (top/bottom of `1Tx1B` mashup) — arrange blocks horizontally side-by-side (`layout--row`, `grid`).
-- **[`templates/half_vertical.liquid`](templates/half_vertical.liquid) (`400×480`, ~368px content height)**: Narrow column (left/right of `1Lx1R` mashup) — stack content vertically (`layout--col`).
-- **[`templates/quadrant.liquid`](templates/quadrant.liquid) (`400×240`, ~144px content height)**: Postcard (`2×2` mashup) — show only the single most important metric.
+- **[`src/full.liquid`](src/full.liquid) (`800×480` OG / `1040×780` X, ~320px content height)**: Full canvas — use 12-col `grid` with `col--span-*` or `grid--cols-3`.
+- **[`src/half_horizontal.liquid`](src/half_horizontal.liquid) (`800×240`, ~144px content height)**: Wide banner (top/bottom of `1Tx1B` mashup) — arrange blocks horizontally side-by-side (`layout--row`, `grid`).
+- **[`src/half_vertical.liquid`](src/half_vertical.liquid) (`400×480`, ~368px content height)**: Narrow column (left/right of `1Lx1R` mashup) — stack content vertically (`layout--col`).
+- **[`src/quadrant.liquid`](src/quadrant.liquid) (`400×240`, ~144px content height)**: Postcard (`2×2` mashup) — show only the single most important metric.
 
-## Step 4: Test & Preview
+## Step 4: Preview, Lint & Test Locally with `bin/trmnlp`
 
-### Option A: Local Development with `trmnlp`
-Install [`trmnlp`](https://github.com/usetrmnl/trmnlp) (via Docker or RubyGems `gem install trmnl_preview`) to preview and lint locally:
+The included [`bin/trmnlp`](bin/trmnlp) wrapper script automatically uses a locally installed `trmnlp` gem or falls back to the official `trmnl/trmnlp` Docker container:
+
 ```bash
-trmnlp serve   # Live preview at http://localhost:4567
-trmnlp lint    # Validate against TRMNL best practices
-```
+# 1. Start live-reload local server at http://localhost:4567
+./bin/trmnlp serve
 
-### Option B: TRMNL Web Markup Editor
-1. Create a Private Plugin in the [TRMNL Dashboard](https://trmnl.com)
-2. Paste your form fields from [`custom-fields.yml`](custom-fields.yml) and configure your strategy
-3. Copy each `.liquid` file into its corresponding tab (`Full`, `Half Horizontal`, `Half Vertical`, `Quadrant`, `Shared`)
-4. Click **Force Refresh** to fetch data and test across devices, bit-depths, and Framework 3.4 themes
+# 2. Run static linter (use --format json for AI agents)
+./bin/trmnlp lint
+
+# 3. Run RSpec headless browser tests across all views, devices (OG & X), portrait, and dark mode
+./bin/trmnlp test --report report
+
+# 4. Build static HTML and PNG screenshots into _build/
+./bin/trmnlp build --png
+
+# 5. Package into a ZIP archive for TRMNL Import
+./bin/trmnlp package
+```
 
 ## Useful Variables & Filters
 
@@ -123,7 +139,7 @@ trmnlp lint    # Validate against TRMNL best practices
 
 <!-- Plugin settings & custom fields -->
 {{ trmnl.plugin_settings.instance_name }}
-{{ trmnl.plugin_settings.custom_fields_values.api_key }}
+{{ trmnl.plugin_settings.custom_fields_values.custom_title }}
 
 <!-- Device info -->
 {{ trmnl.device.model }}
@@ -162,4 +178,4 @@ const data = {{ payload | json }};
 - [Private Plugins Guide](https://help.trmnl.com/en/articles/9510536-private-plugins)
 - [Custom Plugin Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder)
 - [Advanced Liquid Guide](https://help.trmnl.com/en/articles/10693981-advanced-liquid)
-- [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
+- [`AGENTS.md`](AGENTS.md) & [`.github/copilot-instructions.md`](.github/copilot-instructions.md)

@@ -1,0 +1,16 @@
+// Optional JavaScript transform script for TRMNL plugins.
+// Rename to `src/transform.js` to activate.
+//
+// Standard runtime defines `transform(input)`:
+//   function transform(input) { return { ...input }; }
+//
+// Serverless runtime defines `run(input)`:
+//   function run(input) { return { ...input }; }
+//
+// Docs: https://github.com/usetrmnl/trmnlp
+
+function transform(input) {
+  return {
+    ...input,
+  };
+}

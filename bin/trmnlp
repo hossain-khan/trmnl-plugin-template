@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# Wrapper script for TRMNL's official `trmnlp` CLI (https://github.com/usetrmnl/trmnlp).
+# Uses the local `trmnl_preview` Ruby gem if installed, or falls back to the `trmnl/trmnlp` Docker image.
+#
+set -euo pipefail
+
+IMAGE="${TRMNLP_IMAGE:-trmnl/trmnlp}"
+
+# Use local `trmnlp` gem if available on PATH (ignoring this wrapper script itself)
+GEM="$(command -v trmnlp || true)"
+if [ -n "$GEM" ] && ! [ "$GEM" -ef "$0" ] && ! grep -qs "TRMNLP_IMAGE" "$GEM"; then
+  exec "$GEM" "$@"
+fi
+
+if ! command -v docker &>/dev/null; then
+  echo "Error: neither 'trmnlp' gem nor 'docker' found. Install one of:" >&2
+  echo "  gem install trmnl_preview" >&2
+  echo "  https://docs.docker.com/get-docker/" >&2
+  exit 1
+fi
+
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/trmnlp"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/trmnl"
+mkdir -p "$CONFIG_DIR" "$CACHE_DIR"
+
+CONTAINER_HOME="/root"
+ARGS=(--rm --entrypoint /app/bin/trmnlp)
+
+if [ -t 0 ] && [ -t 1 ]; then
+  ARGS+=(--interactive --tty)
+fi
+
+if [ "${1:-}" = "serve" ]; then
+  PORT="${TRMNLP_PORT:-4567}"
+  ARGS+=(--publish "${PORT}:4567")
+fi
+
+exec docker run "${ARGS[@]}" \
+  --env CI \
+  --env TRMNL_API_KEY \
+  --env TRMNLP_IMAGE="$IMAGE" \
+  --volume "$CONFIG_DIR:$CONTAINER_HOME/.config/trmnlp" \
+  --volume "$CACHE_DIR:$CONTAINER_HOME/.cache/trmnl" \
+  --volume "$(pwd):/plugin" \
+  "$IMAGE" "$@"

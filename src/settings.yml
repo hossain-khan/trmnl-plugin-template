@@ -84,24 +84,6 @@ custom_fields:
     github_url: https://github.com/hossain-khan/trmnl-plugin-template
     learn_more_url: https://help.trmnl.com/en/articles/9510536-private-plugins
 
-  - keyname: api_key
-    field_type: password
-    name: API Key
-    description: Required for authenticating with the data service
-    placeholder: Enter your API key
-    optional: true
-
-  - keyname: data_source
-    field_type: select
-    name: Data Source
-    description: Select which data source to display (values are stored lowercase)
-    options:
-      - Source A
-      - Source B
-      - Source C
-    default: source_a
-    optional: true
-
   - keyname: show_details
     field_type: boolean
     name: Show Additional Details
@@ -115,3 +97,22 @@ custom_fields:
     description: Leave blank to use the plugin instance name
     placeholder: Example Plugin
     optional: true
+
+  # Example additional fields (uncomment and reference in polling_url / shared.liquid):
+  # - keyname: api_key
+  #   field_type: password
+  #   name: API Key
+  #   description: Required for authenticating with the data service
+  #   placeholder: Enter your API key
+  #   optional: true
+  #
+  # - keyname: data_source
+  #   field_type: select
+  #   name: Data Source
+  #   description: Select which data source to display (values are stored lowercase)
+  #   options:
+  #     - Source A
+  #     - Source B
+  #     - Source C
+  #   default: source_a
+  #   optional: true

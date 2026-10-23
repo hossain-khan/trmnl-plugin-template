@@ -23,39 +23,58 @@
 
 ## Getting Started
 
-For developers working on this project:
+For developers and AI coding agents working on this project:
 
-1. **Understand the Project**: Read this file completely for comprehensive context
-2. **Review Documentation**:
-   - `README.md` - Project overview and installation
-   - `GETTING_STARTED.md` - Step-by-step setup guide
-3. **Test Templates**: Preview layouts using [`trmnlp`](https://github.com/usetrmnl/trmnlp) (`trmnlp serve` / `trmnlp lint`) or in the TRMNL Markup Editor
-4. **Review Framework**: Familiarize yourself with [TRMNL Framework 3.4 Docs](https://trmnl.com/framework/docs/3.4)
+1. **Read the Bundled Official TRMNL Agent Skill References**:
+   - [`.claude/skills/trmnl/SKILL.md`](../.claude/skills/trmnl/SKILL.md) — Skill entry point & MCP server setup
+   - [`.claude/skills/trmnl/references/agent_prompt.md`](../.claude/skills/trmnl/references/agent_prompt.md) — Core production agent rules & workflows
+   - [`.claude/skills/trmnl/references/template_guide.md`](../.claude/skills/trmnl/references/template_guide.md) — Complete TRMNL Framework 3.4 design system guide
+   - [`.claude/skills/trmnl/references/framework_v3_guide.md`](../.claude/skills/trmnl/references/framework_v3_guide.md) — Framework v3 color & theme supplement
+2. **Review Project Documentation**:
+   - [`AGENTS.md`](../AGENTS.md) — Autonomous verification workflow (`bin/trmnlp`)
+   - [`README.md`](../README.md) — Project overview and installation
+   - [`GETTING_STARTED.md`](../GETTING_STARTED.md) — Step-by-step setup guide
+3. **Run Local Preview, Lint & Browser Tests (`bin/trmnlp`)**:
+   - `./bin/trmnlp serve` — Live preview server at `http://localhost:4567`
+   - `./bin/trmnlp lint --format json` — Static validation of `src/settings.yml` and `src/*.liquid`
+   - `./bin/trmnlp test --report report` — Headless browser RSpec tests across all views and devices
+   - `./bin/trmnlp build --png` — Render static HTML + PNG screenshots into `_build/`
 
 ## Project Structure
 
 ```
 your-plugin-name/
-├── .github/                      # GitHub configuration
-│   ├── workflows/               # GitHub Actions (if applicable)
-│   ├── copilot-instructions.md  # This file
-│   └── TEMPLATE_USAGE.md        # Instructions for using the template
-├── assets/                       # Design assets
-│   ├── icon/                    # Plugin icons
-│   └── demo/                    # Demo screenshots & sample-data.json
-├── templates/                    # Template layouts (uploaded to TRMNL or moved to src/ for trmnlp)
-│   ├── full.liquid              # Full-screen layout (800x480 / 1040x780)
-│   ├── half_horizontal.liquid   # Top or bottom half of a 1Tx1B mashup (800x240)
-│   ├── half_vertical.liquid     # Left or right half of a 1Lx1R mashup (400x480)
-│   ├── quadrant.liquid          # Quarter-size 2x2 mashup layout (400x240)
-│   └── shared.liquid            # Reusable templates, variables, and inline SVG assets
-├── settings.yml                  # Plugin configuration & custom_fields (uploaded to TRMNL)
-├── custom-fields.yml             # Reference custom form fields YAML for the TRMNL UI
-├── LICENSE                       # License file
-└── .gitignore                    # Git ignore patterns
+├── .claude/
+│   ├── settings.json                 # Enables trmnl@trmnl-agent-skills plugin in Claude Code
+│   └── skills/trmnl/                 # Bundled usetrmnl/trmnl-agent-skills (SKILL.md + references/)
+├── .github/
+│   ├── instructions/
+│   │   └── trmnl.instructions.md     # GitHub Copilot TRMNL skill instructions
+│   ├── workflows/
+│   │   └── trmnl.yml                 # GitHub Actions CI (`trmnlp lint` + `trmnlp test`)
+│   ├── copilot-instructions.md       # This file
+│   └── TEMPLATE_USAGE.md             # Instructions for customizing the template
+├── assets/
+│   └── demo/                         # Demo preview screenshots & sample-data.json
+├── bin/
+│   └── trmnlp                        # CLI wrapper (local `trmnlp` gem or `trmnl/trmnlp` Docker container)
+├── src/
+│   ├── settings.yml                  # Plugin configuration & custom_fields
+│   ├── shared.liquid                 # Reusable templates, variables, and inline SVG assets
+│   ├── full.liquid                   # Full-screen layout (800x480 OG / 1040x780 X)
+│   ├── half_horizontal.liquid        # Top or bottom half of a 1Tx1B mashup (800x240)
+│   ├── half_vertical.liquid          # Left or right half of a 1Lx1R mashup (400x480)
+│   ├── quadrant.liquid               # Quarter-size 2x2 mashup layout (400x240)
+│   ├── transform.js.example          # Optional JavaScript payload transform template
+│   └── transform.py.example          # Optional Python serverless transform template
+├── tests/
+│   └── plugin_spec.rb                # Headless browser RSpec tests (`it_behaves_like 'a publishable recipe'`)
+├── .trmnlp.yml                       # Local preview configuration & mock variables
+├── AGENTS.md                         # AI agent workflow guide
+├── custom-fields.yml                 # Reference custom form fields YAML for the TRMNL UI
+├── LICENSE                           # License file
+└── .gitignore                        # Git ignore patterns
 ```
-
-> **Note on `trmnlp` & GitHub Sync**: When using the official [`trmnlp`](https://github.com/usetrmnl/trmnlp) CLI or [TRMNL GitHub Sync](https://help.trmnl.com/en/articles/15977899-github-sync), `settings.yml` and the `.liquid` files (plus optional `transform.{js,py,rb,php}`) live inside a `src/` directory alongside a root `.trmnlp.yml` file. When exporting/importing a plugin `.zip` archive, `settings.yml` and the `.liquid` files sit in a flat root directory.
 
 ## Hard Rules for TRMNL ePaper Markup (NON-NEGOTIABLE)
 
