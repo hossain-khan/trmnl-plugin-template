@@ -1,315 +1,165 @@
 # Getting Started with This Template
 
-This guide walks you through setting up your TRMNL plugin using this template.
+This guide walks you through setting up your TRMNL Private Plugin or Recipe using this template and **[TRMNL Framework 3.4](https://trmnl.com/framework/docs/3.4)**.
 
 ## Step 1: Clone the Repository
 
-This template is already in place. You can now customize it for your specific plugin.
+Clone this repository as a starting point for your plugin.
 
 ## Step 2: Customize Configuration Files
 
-### Update `settings.yml`
+### Update [`settings.yml`](settings.yml)
 
-1. Change the `polling_url` to your backend API endpoint:
+1. Choose your plugin's **strategy** ([Plugin Strategies Guide](https://help.trmnl.com/en/articles/17434705-plugin-strategies)):
+   - `polling` — TRMNL fetches 1 or more newline-separated URLs (`polling_url`, `polling_verb`, `polling_headers`, `polling_body`)
+   - `webhook` — Your service POSTs `{"merge_variables": {...}}` to TRMNL's webhook URL (max 5KB, 10KB on TRMNL+)
+   - `plugin_merge` — Combines data already fetched by other plugins on your account
+   - `static` — Uses JSON defined in `static_data`
+   - `async_polling` — Server responds HTTP 202 and POSTs to `{{ callback_url }}` within 15 minutes
+   - `none` — Uses only `trmnl.*` globals or client-side JS
+
+2. Configure your `polling_url` and `refresh_interval`:
    ```yaml
-   polling_url: "https://your-api.example.com/plugin/data"
+   name: My Cool Plugin
+   description: Displays metrics from my service
+   framework_version: "3.4.0"
+   strategy: polling
+   refresh_interval: 15
+   polling_url: "https://api.example.com/v1/stats"
+   polling_verb: GET
+   polling_headers: "authorization=Bearer {{ api_key }}"
+   no_screen_padding: 'no'
+   dark_mode: 'no'
    ```
 
-2. Adjust `refresh_frequency` based on your data update frequency:
-   - Fast data: 5-15 minutes
-   - Medium: 15-30 minutes
-   - Slow changing: 30-60+ minutes
-
-3. Update the `name` and `description`:
+3. Configure your **Custom Form Fields** under `custom_fields:` in [`settings.yml`](settings.yml) (or see [`custom-fields.yml`](custom-fields.yml) for more examples):
    ```yaml
-   name: "My Cool Plugin"
-   description: "Displays important information from my service"
+   custom_fields:
+     - keyname: about
+       name: About This Plugin
+       field_type: author_bio
+       category: productivity
+       description: Displays live metrics on your TRMNL device.
+       github_url: https://github.com/your-username/your-plugin
+
+     - keyname: api_key
+       field_type: password
+       name: API Key
+       description: Get your key from example.com/settings
+       optional: false
+
+     - keyname: units
+       field_type: select
+       name: Units
+       options:
+         - Metric
+         - Imperial
+       default: metric
+       optional: true
    ```
+   > **Important Form Builder Rules**:
+   > - Required keys for every field: `keyname`, `field_type`, `name`
+   > - All fields are **required by default** unless `optional: true` is added
+   > - `select` option values are always stored **lowercase** (`{{ trmnl.plugin_settings.custom_fields_values.units }}` → `"metric"`)
 
-4. Keep or remove layout types based on what you want to support:
-   ```yaml
-   layouts:
-     - full                    # Always keep full
-     - half_horizontal         # Optional
-     - half_vertical           # Optional
-     - quadrant                # Optional
-   ```
+## Step 3: Edit Template Files ([`templates/`](templates/))
 
-### Update `custom-fields.yml`
+### Hard Rules for ePaper Templates
+- **Never wrap markup in `<div class="view">`**: The TRMNL platform provides `<div class="screen"><div class="view view--*">` automatically. Start your template with `<div class="layout ...">`.
+- **`<div class="layout">` and `<div class="title_bar">` must be siblings**.
+- **No inline `style="..."` or `<style>` blocks**: Use Framework 3.4 utility classes (`stretch`, `grid`, `col--span-*`, `flex`, `gap--*`).
+- **No emojis**: ePaper fonts do not include emojis (they render as empty boxes `□`). Use text labels, semantic badges (`label--success`, `label--warning`, `label--error`), or inline SVGs with `image--adaptive`.
 
-1. Remove example fields you don't need
-2. Add your required fields (API keys, preferences, etc.)
-3. Use appropriate field types for validation
-
-Example:
-```yaml
-- key: "api_key"
-  type: "text"
-  label: "OpenWeather API Key"
-  required: true
-  description: "Get from openweathermap.org"
-
-- key: "city"
-  type: "text"
-  label: "City Name"
-  required: true
-  placeholder: "New York"
-```
-
-## Step 3: Edit Template Files
-
-### 1. Start with `shared.liquid`
-
-Update or add reusable components:
+### 1. [`templates/shared.liquid`](templates/shared.liquid)
+Runs before any view template. Define shared variables, inline 24×24 SVG icons, and reusable `{% template %}` blocks:
 
 ```liquid
-{% template my_custom_component %}
-<div class="flex flex--col gap--small">
-  <span class="value value--large">{{ value }}</span>
-  <span class="label">{{ label }}</span>
+{% template my_metric %}
+<div class="item">
+  <div class="meta"></div>
+  <div class="content">
+    <span class="value value--large value--tnums" data-fit-value="true">{{ value }}</span>
+    <span class="label">{{ label }}</span>
+  </div>
 </div>
 {% endtemplate %}
 ```
 
-### 2. Update `full.liquid`
-
-Replace the example content with your actual plugin display:
-
+Render partials in any view template by the template block's name:
 ```liquid
-<div class="layout">
-  {% if has_data %}
-    <!-- Your main content here -->
-    <div class="flex flex--center-x flex--center-y h--full">
-      <div class="text--center">
-        <div class="value value--large md:value--xlarge">
-          {{ your_data }}
-        </div>
-        <div class="title title--medium">
-          {{ your_title }}
-        </div>
-      </div>
-    </div>
-  {% else %}
-    {% render "shared", template_name: "error_state", size: "full" %}
-  {% endif %}
-</div>
-
-<div class="title_bar">
-  <span class="title md:title--large">{{ plugin_name }}</span>
-</div>
+{% render "my_metric", value: 42, label: "Active Users" %}
 ```
 
-### 3. Update Other Layouts
+### 2. Adapt Across All 4 View Sizes
+- **[`templates/full.liquid`](templates/full.liquid) (`800×480`, ~320px content height)**: Full canvas — use 12-col `grid` with `col--span-*` or `grid--cols-3`.
+- **[`templates/half_horizontal.liquid`](templates/half_horizontal.liquid) (`800×240`, ~144px content height)**: Wide banner (top/bottom of `1Tx1B` mashup) — arrange blocks horizontally side-by-side (`layout--row`, `grid`).
+- **[`templates/half_vertical.liquid`](templates/half_vertical.liquid) (`400×480`, ~368px content height)**: Narrow column (left/right of `1Lx1R` mashup) — stack content vertically (`layout--col`).
+- **[`templates/quadrant.liquid`](templates/quadrant.liquid) (`400×240`, ~144px content height)**: Postcard (`2×2` mashup) — show only the single most important metric.
 
-- `half_horizontal.liquid` - Side-by-side content
-- `half_vertical.liquid` - Stacked content
-- `quadrant.liquid` - Minimal compact display
+## Step 4: Test & Preview
 
-## Step 4: Test in TRMNL Markup Editor
-
-1. Go to [editor.trmnl.com](https://editor.trmnl.com)
-2. Copy your template code into the editor
-3. Add your sample JSON data:
-   ```json
-   {
-     "has_data": true,
-     "your_data": "42",
-     "your_title": "Example"
-   }
-   ```
-4. Preview on different device sizes
-5. Verify responsive behavior
-
-## Step 5: Set Up Your Backend
-
-Create an API endpoint that returns JSON:
-
-### Example with Node.js/Express:
-
-```javascript
-app.get('/plugin/data', (req, res) => {
-  const data = {
-    has_data: true,
-    your_data: "42",
-    your_title: "Example Value",
-    status: "success"
-  };
-  res.json(data);
-});
+### Option A: Local Development with `trmnlp`
+Install [`trmnlp`](https://github.com/usetrmnl/trmnlp) (via Docker or RubyGems `gem install trmnl_preview`) to preview and lint locally:
+```bash
+trmnlp serve   # Live preview at http://localhost:4567
+trmnlp lint    # Validate against TRMNL best practices
 ```
 
-### Example with Python/Flask:
+### Option B: TRMNL Web Markup Editor
+1. Create a Private Plugin in the [TRMNL Dashboard](https://trmnl.com)
+2. Paste your form fields from [`custom-fields.yml`](custom-fields.yml) and configure your strategy
+3. Copy each `.liquid` file into its corresponding tab (`Full`, `Half Horizontal`, `Half Vertical`, `Quadrant`, `Shared`)
+4. Click **Force Refresh** to fetch data and test across devices, bit-depths, and Framework 3.4 themes
 
-```python
-@app.route('/plugin/data')
-def get_plugin_data():
-    return {
-        'has_data': True,
-        'your_data': '42',
-        'your_title': 'Example Value',
-        'status': 'success'
-    }
-```
+## Useful Variables & Filters
 
-**Important**: 
-- ✅ Return valid JSON
-- ✅ Use HTTPS only
-- ✅ Respond in <3 seconds
-- ✅ Include error handling
-
-## Step 6: Update Documentation
-
-Update `.github/copilot-instructions.md`:
-
-1. Replace the placeholder header:
-   ```markdown
-   > **Repository**: [your-username/your-repo]
-   > **Author**: Your Name
-   > **Last Updated**: January 2026
-   ```
-
-2. Fill in your project overview section
-
-3. Document your data structure
-
-4. Add any project-specific patterns
-
-See [TEMPLATE_USAGE.md](TEMPLATE_USAGE.md) for detailed customization instructions.
-
-## Step 7: Test Everything
-
-### Manual Testing Checklist
-
-- [ ] Layouts render correctly in markup editor
-- [ ] Responsive behavior works (test sm, md, lg)
-- [ ] Error state displays when `has_data: false`
-- [ ] Text truncation works with long content
-- [ ] Images display correctly
-- [ ] Portrait mode rendering works
-- [ ] Backend API returns valid data
-- [ ] Data updates at correct frequency
-
-### Edge Cases to Test
-
-- Empty/minimal data
-- Very long text (100+ characters)
-- Special characters and unicode
-- Null/undefined values
-- Missing optional fields
-- API timeout/error responses
-
-## Step 8: Ready to Deploy!
-
-When everything is tested:
-
-1. Push your code to GitHub
-2. Create a plugin recipe in TRMNL Dashboard
-3. Upload your templates and assets
-4. Submit for review
-5. Deploy your backend API
-
-## Useful Variables
-
-### TRMNL Platform Variables
-
+### TRMNL Global Variables (`{{ trmnl }}`)
 ```liquid
-<!-- User info -->
+<!-- User info & localization -->
 {{ trmnl.user.first_name }}
-{{ trmnl.user.timezone }}
+{{ trmnl.user.locale }}
+{{ trmnl.user.time_zone_iana }}
+{{ trmnl.user.utc_offset }}
 
-<!-- Plugin settings -->
+<!-- Plugin settings & custom fields -->
 {{ trmnl.plugin_settings.instance_name }}
-{{ trmnl.plugin_settings.custom_fields_values.field_key }}
+{{ trmnl.plugin_settings.custom_fields_values.api_key }}
 
 <!-- Device info -->
 {{ trmnl.device.model }}
+{{ trmnl.device.bit_depth }}
+{{ trmnl.device.width }}
+{{ trmnl.device.height }}
 {{ trmnl.device.orientation }}
 ```
 
-### Data Filters
-
+### Advanced Liquid & TRMNL Custom Filters
+See [Advanced Liquid](https://help.trmnl.com/en/articles/10693981-advanced-liquid) and [Custom Plugin Filters](https://help.trmnl.com/en/articles/10347358-custom-plugin-filters):
 ```liquid
-<!-- Formatting -->
-{{ text | truncate: 50 }}
-{{ number | number_with_delimiter }}
-{{ date | date: "%B %d, %Y" }}
-{{ date | relative_time }}
+<!-- Convert UTC ISO8601 date to user's local timezone -->
+{{ timestamp | date: "%s" | plus: trmnl.user.utc_offset | date: "%H:%M" }}
 
-<!-- Default values -->
-{{ missing_field | default: "N/A" }}
+<!-- Localized word & date -->
+{{ 'updated' | l_word: trmnl.user.locale }}
+{{ '2025-01-11' | l_date: '%y %b', trmnl.user.locale }}
+
+<!-- Numbers & currency -->
+{{ 1234567 | number_with_delimiter }}
+{{ 10420 | number_to_currency }}
+{{ 1.0 | divided_by: count | round: 2 }}
+
+<!-- Random numbers & unique IDs for Mashups -->
+{% assign rand = "" | random_number: 1, 10 %}
+{% assign chart_id = "chart-" | append_random %}
+
+<!-- JSON serialization for JS -->
+const data = {{ payload | json }};
 ```
-
-## Framework Classes Reference
-
-### Layout
-```liquid
-<!-- Flexbox -->
-<div class="flex flex--row flex--center-x flex--center-y gap--medium h--full">
-
-<!-- Grid -->
-<div class="grid grid--cols-2 gap--small">
-
-<!-- Spacing -->
-<div class="p--2 mb--small">
-```
-
-### Typography
-```liquid
-<span class="value value--large md:value--xlarge">42</span>
-<span class="title title--medium md:title--large">Heading</span>
-<span class="label">Label</span>
-<span class="description">Description text</span>
-```
-
-### Visual
-```liquid
-<div class="bg--white rounded outline text--center">
-<img class="image image--contain image-dither">
-```
-
-### Responsive
-```liquid
-<!-- Size breakpoints -->
-sm: (600px+)
-md: (800px+)
-lg: (1024px+)
-
-<!-- Orientation -->
-portrait:
-
-<!-- Bit-depth -->
-1bit: 2bit: 4bit: 8bit:
-```
-
-## Troubleshooting
-
-**Templates not rendering?**
-- Check for syntax errors (unmatched tags, quotes)
-- Verify JSON data structure matches template variables
-- Test in markup editor first before publishing
-
-**Layout breaks on some devices?**
-- Test on all device sizes in markup editor
-- Use responsive classes: `sm:`, `md:`, `lg:`
-- Avoid fixed widths - use `flex: 1` or percentages
-
-**Data not displaying?**
-- Verify backend API returns valid JSON
-- Check custom field names match template variables
-- Add error states to handle missing data
-
-**Text overflowing?**
-- Use `data-clamp="2"` to limit lines
-- Set `max-width` on containers
-- Use `truncate` filter for single lines
 
 ## Need Help?
 
-- Check [TRMNL Framework Docs](https://trmnl.com/framework)
-- Read [Plugin Guides](https://help.trmnl.com/en/collections/7820559-plugin-guides)
-- Review [Liquid Documentation](https://shopify.github.io/liquid/)
-- Check `.github/copilot-instructions.md` for project-specific guidance
-
----
-
-**Good luck building your TRMNL plugin! 🎉**
+- [TRMNL Framework 3.4 Docs](https://trmnl.com/framework/docs/3.4)
+- [Private Plugins Guide](https://help.trmnl.com/en/articles/9510536-private-plugins)
+- [Custom Plugin Form Builder](https://help.trmnl.com/en/articles/10513740-custom-plugin-form-builder)
+- [Advanced Liquid Guide](https://help.trmnl.com/en/articles/10693981-advanced-liquid)
+- [`.github/copilot-instructions.md`](.github/copilot-instructions.md)

@@ -1,89 +1,56 @@
 {% comment %}
   ============================================================================
-  FULL.LIQUID - Full-screen Layout Template
+  FULL.LIQUID - Full-screen Layout Template (800x480 OG / 1040x780 X)
   ============================================================================
-  Use this template for displaying content across the entire TRMNL screen.
-  
+  Framework: TRMNL Framework 3.4 (https://trmnl.com/framework/docs/3.4)
+  Usable Content Height: ~320px (with title_bar)
+
   Best For:
-  - Detailed information displays
-  - Main data presentation
-  - Full-screen widgets
-  
-  Device Sizes: Works across all devices (sm, md, lg)
-  Padding: p--2 (standard)
-  
-  Structure:
-  - Main content area with flex: 1 for vertical centering
-  - Title bar at bottom for branding
-  - Error state fallback for unconfigured plugins
+  - Detailed dashboard displays with hero metrics + supporting items
+  - Side-by-side Grid splits (e.g., 8/4 or 3-column metrics)
+  - Full-screen tables, lists, or TRMNLCharts / TRMNLMaps visualizations
+
+  Hard Rules Followed:
+  - Do NOT wrap in `<div class="view">` (platform provides Screen and View)
+  - `<div class="layout">` and `<div class="title_bar">` are siblings
+  - Zero inline `style="..."` attributes and zero emojis (ePaper safe)
   ============================================================================
 {% endcomment %}
 
-<div class="layout">
-  {% comment %} Check if data is available {% endcomment %}
+<div class="layout layout--col gap--space-between">
   {% if has_data %}
-  
-  <div class="flex flex--col gap--medium h--full">
-    {% comment %} Main content area - centered vertically {% endcomment %}
-    <div class="flex flex--center-x flex--center-y" style="flex: 1;">
-      <div class="text--center">
-        {% comment %} 
-          Example: Display your primary data here
-          Replace with actual data from your data source
-          
-          Tip: Use data-value-fit for long headlines that need to scale
-          Tip: Use value--tnums for precise numeric alignment
-        {% endcomment %}
-        <div class="value value--large md:value--xxlarge lg:value--xxxlarge" data-value-fit="true" data-value-fit-max-height="220">
-          42
-        </div>
-        <div class="title title--small md:title--medium lg:title--large">
-          Example Value
-        </div>
-        <div class="description md:label" data-clamp="2">
-          This is a template example with better best practices
-        </div>
-      </div>
-    </div>
 
-    {% comment %} Visual separator using modern divider component {% endcomment %}
-    <div class="divider"></div>
-
-    {% comment %} Optional secondary content area with improved styling {% endcomment %}
-    <div class="grid grid--cols-2 gap--medium md:gap--large">
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content text--center">
-          <div class="value value--medium md:value--large">📊</div>
-          <div class="label">Stat 1</div>
-        </div>
-      </div>
-      <div class="item">
-        <div class="meta"></div>
-        <div class="content text--center">
-          <div class="value value--medium md:value--large">📈</div>
-          <div class="label">Stat 2</div>
-        </div>
-      </div>
-    </div>
+  {% comment %} Top Hero Section: Primary Value + Status Badge {% endcomment %}
+  <div class="flex flex--col flex--center gap--xsmall stretch text--center">
+    {% render "status_badge", status: status, message: status_label %}
+    <span class="value value--xxlarge md:value--xxxlarge lg:value--giga value--tnums" data-fit-value="true">
+      {{ value | default: "42" }}
+    </span>
+    <span class="title title--base lg:title--large" data-clamp="1">
+      {{ title | default: "Example Value" }}
+    </span>
+    {% if status_description %}
+    <span class="description" data-clamp="2">
+      {{ status_description }}
+    </span>
+    {% endif %}
   </div>
+
+  {% if show_details != false and show_details != "false" %}
+  {% comment %} Visual separator using Framework divider component {% endcomment %}
+  <div class="divider"></div>
+
+  {% comment %} Bottom Supporting Metrics using 3-Column Grid and `.item` pattern {% endcomment %}
+  <div class="grid grid--cols-3 gap--medium">
+    {% render "metric_item", value: detail_1, label: "Metric 1", index: "1" %}
+    {% render "metric_item", value: detail_2, label: "Metric 2", index: "2" %}
+    {% render "metric_item", value: detail_3, label: "Metric 3", index: "3" %}
+  </div>
+  {% endif %}
 
   {% else %}
-  
-  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
-  <div class="flex flex--col flex--center-x flex--center-y gap--medium h--full">
-    <div class="value value--large md:value--xlarge text--center">⚙️</div>
-    <div class="title title--medium md:title--large text--center">Setup Required</div>
-    <div class="description md:title md:title--small text--center">
-      Please configure this plugin with your API key and settings to begin.
-    </div>
-  </div>
-  
+    {% render "error_state", size: "full" %}
   {% endif %}
 </div>
 
-{% comment %} Title bar at bottom {% endcomment %}
-<div class="title_bar">
-  <span class="title md:title--large">Example Plugin</span>
-  <span class="instance">Full Layout</span>
-</div>
+{% render "title_bar", icon: plugin_icon_data_uri, title: resolved_title, instance: resolved_instance %}

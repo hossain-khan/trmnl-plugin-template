@@ -1,63 +1,34 @@
 {% comment %}
   ============================================================================
-  QUADRANT.LIQUID - Quarter-size Layout Template
+  QUADRANT.LIQUID - Quarter-size Postcard Layout (400x240)
   ============================================================================
-  Use this template for minimal, compact displays on quarter-size screens.
-  
-  Best For:
-  - Simple, single-value displays
-  - Compact widgets in dashboard
-  - Minimal information cards
-  - Icon + label combinations
-  
-  Device Sizes: Works across all devices (sm, md, lg)
-  Padding: p--1 (minimal - every pixel counts!)
-  Responsive: Simplifies further for very small screens
-  
-  Structure:
-  - Single centered content
-  - Minimal title bar
-  - Absolute space efficiency
+  Framework: TRMNL Framework 3.4 (https://trmnl.com/framework/docs/3.4)
+  Mashup Slot: One quarter of a 2x2 mashup (or cell in a 3x3 fluid mashup)
+  Usable Content Height: ~144px (400px wide)
+
+  View Adaptation Strategy (Section 15 of Template Guide):
+  - Pick the ONE most important metric and display it clearly.
+  - Ruthlessly cut secondary metrics, long descriptions, and legends.
+  - Framework 3.4 automatically renders `.title_bar` in compact mode inside
+    mashup views.
   ============================================================================
 {% endcomment %}
 
-<div class="layout">
-  {% comment %} Check if data is available {% endcomment %}
+<div class="layout layout--col layout--center gap--xsmall">
   {% if has_data %}
-  
-  {% comment %} 
-    Everything centered and minimal
-    Uses inline-flex for mixed content display
-    See Advanced Layout Patterns section for device-specific optimization
-  {% endcomment %}
-  <div class="flex flex--col flex--center-x flex--center-y h--full gap--xsmall">
-    
-    {% comment %} 
-      Primary value with tabular numbers for alignment
-      data-value-fit auto-scales headline to fit available space
-    {% endcomment %}
-    <div class="value value--large md:value--xlarge value--tnums" data-value-fit="true" data-value-fit-max-height="140">
-      {{ primary_value | default: "42" }}
-    </div>
-    
-    {% comment %} Compact title - uses data-clamp for safety {% endcomment %}
-    <div class="title title--small md:title--medium text--center" data-clamp="1">
-      {{ metric_name | default: "Quick Stats" }}
-    </div>
+
+  <div class="flex flex--col flex--center gap--xsmall text--center">
+    <span class="value value--large md:value--xlarge lg:value--xxlarge value--tnums" data-fit-value="true">
+      {{ value | default: "42" }}
+    </span>
+    <span class="label" data-clamp="1">
+      {{ title | default: "Quick Stats" }}
+    </span>
   </div>
 
   {% else %}
-  
-  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
-  <div class="flex flex--col flex--center-x flex--center-y gap--xsmall h--full">
-    <div class="value value--small md:value--medium">⚙️</div>
-    <div class="description text--center">Setup needed</div>
-  </div>
-  
+    {% render "error_state", size: "quadrant" %}
   {% endif %}
 </div>
 
-{% comment %} Minimal title bar for quadrant {% endcomment %}
-<div class="title_bar">
-  <span class="title title--small">Plugin</span>
-</div>
+{% render "title_bar", icon: plugin_icon_data_uri, title: resolved_title %}

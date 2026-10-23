@@ -1,89 +1,65 @@
 {% comment %}
   ============================================================================
-  HALF_VERTICAL.LIQUID - Half-size Vertical Layout Template
+  HALF_VERTICAL.LIQUID - Half-size Vertical Column (400x480)
   ============================================================================
-  Use this template for top-bottom stacked content on half-height displays.
-  
-  Best For:
-  - Stacked layouts (primary + secondary content)
-  - Top/bottom split displays
-  - Compact vertical layouts
-  
-  Device Sizes: Works across all devices (sm, md, lg)
-  Padding: p--2 (standard)
-  
-  Structure:
-  - Primary content fills available space (flex: 1)
-  - Secondary content at bottom
-  - Minimal gap to maximize space
+  Framework: TRMNL Framework 3.4 (https://trmnl.com/framework/docs/3.4)
+  Mashup Slot: Left or right half of a 1Lx1R side-by-side mashup
+  Usable Content Height: ~368px (narrow 400px width, tall vertical column)
+
+  View Adaptation Strategy (Section 15 of Template Guide):
+  - Narrow width (400px), tall height (~368px).
+  - Stack content vertically from top to bottom (`layout--col`).
+  - Keep column counts low (`grid--cols-1` or `grid--cols-3` for compact numbers).
   ============================================================================
 {% endcomment %}
 
-<div class="layout">
-  {% comment %} Check if data is available {% endcomment %}
+<div class="layout layout--col gap--space-between">
   {% if has_data %}
-  
-  <div class="flex flex--col gap--small h--full">
-    
-    {% comment %}
-      Primary content area - fills available space
-      Uses richtext pattern for complex, formatted content
-      See Advanced Layout Patterns section in copilot-instructions
-    {% endcomment %}
-    <div class="flex flex--center-x flex--center-y" style="flex: 1;">
-      <div class="richtext richtext--center gap--small">
-        <div class="content content--center gap--xsmall text--center">
-          <div class="value value--xxlarge md:value--xxxlarge" data-clamp="1">
-            📊
-          </div>
-          <div class="title title--medium md:title--large">
-            Current Status
-          </div>
-          <div class="description md:title md:title--small" data-clamp="2">
-            {{ status_description | default: "Everything is configured correctly" }}
-          </div>
-        </div>
+
+  {% comment %} Primary content area - stacked vertically {% endcomment %}
+  <div class="flex flex--col flex--center gap--xsmall stretch text--center">
+    {% render "status_badge", status: status, message: status_label %}
+    <span class="value value--xlarge md:value--xxlarge value--tnums" data-fit-value="true">
+      {{ value | default: "42" }}
+    </span>
+    <span class="title title--small md:title--base" data-clamp="1">
+      {{ title | default: "Example Value" }}
+    </span>
+    <span class="description" data-clamp="2">
+      {{ status_description | default: "Everything is configured and running." }}
+    </span>
+  </div>
+
+  <div class="divider"></div>
+
+  {% comment %} Compact 3-column summary row at the bottom of the column {% endcomment %}
+  <div class="grid grid--cols-3 gap--xsmall">
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall value--tnums">{{ detail_1 | default: "—" }}</span>
+        <span class="label label--small">M1</span>
       </div>
     </div>
-
-    {% comment %} Modern divider separating top and bottom content {% endcomment %}
-    <div class="divider"></div>
-
-    {% comment %}
-      Secondary content area - at bottom
-      Grid layout provides better metric alignment
-      Uses value--tnums for tabular number display
-    {% endcomment %}
-    <div class="grid grid--cols-3 gap--xsmall text--center">
-      <div>
-        <div class="label label--small">Last</div>
-        <div class="value value--xsmall value--tnums">{{ last_value | default: "—" }}</div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall value--tnums">{{ detail_2 | default: "—" }}</span>
+        <span class="label label--small">M2</span>
       </div>
-      <div>
-        <div class="label label--small">Average</div>
-        <div class="value value--xsmall value--tnums">{{ average_value | default: "—" }}</div>
-      </div>
-      <div>
-        <div class="label label--small">Best</div>
-        <div class="value value--xsmall value--tnums">{{ best_value | default: "—" }}</div>
+    </div>
+    <div class="item">
+      <div class="meta"></div>
+      <div class="content">
+        <span class="value value--xsmall value--tnums">{{ detail_3 | default: "—" }}</span>
+        <span class="label label--small">M3</span>
       </div>
     </div>
   </div>
 
   {% else %}
-  
-  {% comment %} Display error state when plugin is unconfigured {% endcomment %}
-  <div class="flex flex--col flex--center-x flex--center-y gap--small h--full">
-    <div class="value value--medium md:value--large">⚙️</div>
-    <div class="title title--small md:title--medium text--center">Setup Required</div>
-    <div class="description text--center">Configure plugin to begin.</div>
-  </div>
-  
+    {% render "error_state", size: "half_vertical" %}
   {% endif %}
 </div>
 
-{% comment %} Title bar at bottom {% endcomment %}
-<div class="title_bar">
-  <span class="title md:title--medium">Example Plugin</span>
-  <span class="instance">Half Vertical</span>
-</div>
+{% render "title_bar", icon: plugin_icon_data_uri, title: resolved_title, instance: resolved_instance %}
