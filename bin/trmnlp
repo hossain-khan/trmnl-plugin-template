@@ -25,7 +25,8 @@ CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/trmnl"
 mkdir -p "$CONFIG_DIR" "$CACHE_DIR"
 
 CONTAINER_HOME="/root"
-ARGS=(--rm --entrypoint /app/bin/trmnlp)
+# Mount --tmpfs /tmp so any stale /tmp/.X99-lock baked into the image is cleared and Xvfb starts cleanly
+ARGS=(--rm --tmpfs /tmp --entrypoint /app/bin/trmnlp)
 
 if [ -t 0 ] && [ -t 1 ]; then
   ARGS+=(--interactive --tty)
