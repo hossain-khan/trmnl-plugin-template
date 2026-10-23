@@ -1,13 +1,16 @@
 {
   "name": "trmnl-plugin-template",
-  "version": "1.0.0",
-  "description": "A production-ready template for creating TRMNL plugins",
+  "version": "1.2.0",
+  "description": "A production-ready template for creating TRMNL plugins with local preview, testing, and AI agent skills",
   "keywords": [
     "trmnl",
+    "trmnlp",
     "plugin",
     "e-ink",
+    "epaper",
     "template",
-    "liquid"
+    "liquid",
+    "agent-skills"
   ],
   "author": "Your Name",
   "license": "MIT",
@@ -20,17 +23,24 @@
     "url": "https://github.com/your-username/your-plugin-name/issues"
   },
   "scripts": {
-    "validate": "echo 'No build step required for plugin templates'"
+    "serve": "./bin/trmnlp serve",
+    "build": "./bin/trmnlp build --png",
+    "lint": "./bin/trmnlp lint",
+    "test": "./bin/trmnlp test --report report",
+    "validate": "./bin/trmnlp lint && ./bin/trmnlp test"
   },
   "engines": {
     "node": ">=14.0.0"
   },
   "devDependencies": {},
   "files": [
-    "templates/",
+    "src/",
     "assets/",
-    "settings.yml",
+    "bin/",
+    "tests/",
+    ".trmnlp.yml",
     "custom-fields.yml",
+    "AGENTS.md",
     "README.md",
     "LICENSE"
   ]

@@ -1,0 +1,28 @@
+# TRMNL Local Preview Configuration (.trmnlp.yml)
+# Docs: https://github.com/usetrmnl/trmnlp
+---
+# Auto-reload browser when these files change during `bin/trmnlp serve`
+watch:
+  - .trmnlp.yml
+  - src
+
+# Values of custom fields (defined in src/settings.yml) for local preview:
+custom_fields:
+  show_details: true
+  custom_title: "Example Plugin"
+
+# Override or inject merge variables for local preview (`bin/trmnlp serve` / `bin/trmnlp build`):
+variables:
+  has_data: true
+  title: "Example Value"
+  value: 42
+  status: "success"
+  status_label: "Online"
+  status_description: "All systems operational and reporting on schedule."
+  metadata: "Updated 2m ago"
+  detail_1: "100"
+  detail_2: "50"
+  detail_3: "75"
+  trmnl:
+    plugin_settings:
+      instance_name: "Example Plugin"
